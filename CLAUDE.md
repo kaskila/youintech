@@ -46,7 +46,7 @@ These are product decisions, already made. Do not relitigate them in code.
 | Language | TypeScript, `strict: true` | No `any`. No `@ts-ignore` without a comment explaining why |
 | Styling | Tailwind CSS v4 | CSS-first config via `@theme` in `app/globals.css`. No `tailwind.config.js` |
 | Database | PostgreSQL (Neon) | |
-| ORM | Prisma | Migrations committed. Never `db push` against production |
+| ORM | Prisma (v7) | Migrations committed. Never `db push` against production. Connection strings live in `prisma.config.ts` / `src/lib/db.ts`, never in `schema.prisma`'s `datasource` block — v7 deprecated `url`/`directUrl` there. CLI (migrations) uses `DIRECT_URL` (unpooled); runtime client uses `DATABASE_URL` (pooled) via `@prisma/adapter-pg` |
 | Auth | Better Auth | Admin/editor only. Public pages are unauthenticated |
 | Media | Cloudinary | Signed uploads from the admin UI. Never expose the API secret client-side |
 | Email | Resend | Transactional only — application confirmations, admin notifications |

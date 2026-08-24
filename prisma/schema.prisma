@@ -14,14 +14,12 @@
 // ============================================================================
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL") // Neon POOLED connection — used at runtime
-  directUrl = env("DIRECT_URL")   // Neon DIRECT connection — used by migrations
-  // Migrations run through PgBouncer will fail or hang. Both vars are required.
+  provider = "postgresql"
 }
 
 // ============================================================================
@@ -29,26 +27,26 @@ datasource db {
 // ============================================================================
 
 enum Role {
-  ADMIN   // full access, including user management and application review
-  EDITOR  // content only — cannot see applications (they contain personal data)
+  ADMIN // full access, including user management and application review
+  EDITOR // content only — cannot see applications (they contain personal data)
 }
 
 model User {
-  id            String    @id
+  id            String   @id
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String   @unique
+  emailVerified Boolean  @default(false)
   image         String?
-  role          Role      @default(EDITOR)
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role          Role     @default(EDITOR)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  sessions      Session[]
-  accounts      Account[]
-  posts         Post[]
-  auditLogs     AuditLog[]
-  reviewedApps  Application[] @relation("ApplicationReviewer")
+  sessions     Session[]
+  accounts     Account[]
+  posts        Post[]
+  auditLogs    AuditLog[]
+  reviewedApps Application[] @relation("ApplicationReviewer")
 
   @@map("user")
 }
@@ -80,7 +78,7 @@ model Account {
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
   scope                 String?
-  password              String?   // hashed by Better Auth. Never touch directly.
+  password              String? // hashed by Better Auth. Never touch directly.
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -110,9 +108,9 @@ model Sector {
   id           String  @id @default(cuid())
   slug         String  @unique
   name         String
-  tagline      String?              // one line, used on cards
-  description  String?              // full copy for the sector page
-  icon         String?              // lucide icon name, not an image
+  tagline      String? // one line, used on cards
+  description  String? // full copy for the sector page
+  icon         String? // lucide icon name, not an image
   displayOrder Int     @default(0)
   isActive     Boolean @default(true)
 
@@ -133,17 +131,17 @@ model Sector {
 enum ContentStatus {
   DRAFT
   PUBLISHED
-  ARCHIVED   // hidden from the site but never deleted
+  ARCHIVED // hidden from the site but never deleted
 }
 
 model Post {
   id          String        @id @default(cuid())
   slug        String        @unique
   title       String
-  excerpt     String                       // required — used for cards, SEO, OG
-  body        String                       // markdown
-  coverImage  String?                      // Cloudinary public_id, not a full URL
-  coverAlt    String?                      // required by lint when coverImage set
+  excerpt     String // required — used for cards, SEO, OG
+  body        String // markdown
+  coverImage  String? // Cloudinary public_id, not a full URL
+  coverAlt    String? // required by lint when coverImage set
   status      ContentStatus @default(DRAFT)
   publishedAt DateTime?
 
@@ -161,8 +159,8 @@ model Post {
 }
 
 model Event {
-  id          String        @id @default(cuid())
-  slug        String        @unique
+  id          String  @id @default(cuid())
+  slug        String  @unique
   title       String
   summary     String
   description String
@@ -172,9 +170,9 @@ model Event {
   startsAt DateTime
   endsAt   DateTime?
   venue    String?
-  isOnline Boolean @default(false)
+  isOnline Boolean   @default(false)
 
-  registrationUrl String?   // external form/link. No in-house ticketing in MVP.
+  registrationUrl String? // external form/link. No in-house ticketing in MVP.
   status          ContentStatus @default(DRAFT)
 
   // Post-event evidence. This is what funders actually read.
@@ -200,7 +198,7 @@ enum ApplicationStatus {
   REVIEWING
   ACCEPTED
   DECLINED
-  WITHDRAWN   // set when the applicant exercises their right to object
+  WITHDRAWN // set when the applicant exercises their right to object
 }
 
 model Application {
@@ -211,37 +209,37 @@ model Application {
   email       String
   phone       String?
   city        String?
-  institution String?   // school, university or employer — free text
-  ageBracket  String?   // "16-17" | "18-24" | "25-35" | "35+".
-                        // A bracket, never a date of birth. Under-18 triggers
-                        // the safeguarding flow — see below.
+  institution String? // school, university or employer — free text
+  ageBracket  String? // "16-17" | "18-24" | "25-35" | "35+".
+  // A bracket, never a date of birth. Under-18 triggers
+  // the safeguarding flow — see below.
   skills      String?
   motivation  String
 
   // --- Consent record. Required under DPA s.15. ---------------------------
   // Consent must be unbundled: one purpose, one record. Do not collapse these
   // into a single checkbox, and never pre-tick either of them in the form.
-  consentedAt          DateTime  // processing this application. Required.
+  consentedAt          DateTime // processing this application. Required.
   marketingConsent     Boolean   @default(false)
   marketingConsentAt   DateTime? // separate purpose: newsletters, campaigns.
-                                 // Withdrawable independently of the above.
-  privacyPolicyVersion String    // e.g. "2026-08-01". Never overwrite a
-                                 // published policy version — publish a new one.
+  // Withdrawable independently of the above.
+  privacyPolicyVersion String // e.g. "2026-08-01". Never overwrite a
+  // published policy version — publish a new one.
   guardianConsent      Boolean   @default(false)
   // ^ Must be true before an under-18 application can move past NEW.
   //   Enforced in the review action, not just the form.
 
   // --- Retention. DPA: keep only as long as necessary. --------------------
-  retentionUntil DateTime   // set to submittedAt + 24 months by default
-  anonymisedAt   DateTime?  // when purged, personal fields are nulled and this
-                            // is stamped. The row survives for reporting counts.
+  retentionUntil DateTime // set to submittedAt + 24 months by default
+  anonymisedAt   DateTime? // when purged, personal fields are nulled and this
+  // is stamped. The row survives for reporting counts.
 
   // --- Workflow -----------------------------------------------------------
   status      ApplicationStatus @default(NEW)
   reviewNotes String?
   reviewedAt  DateTime?
   reviewerId  String?
-  reviewer    User?     @relation("ApplicationReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  reviewer    User?             @relation("ApplicationReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
 
   submittedAt DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -261,7 +259,7 @@ model ApplicationSector {
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   sectorId      String
   sector        Sector      @relation(fields: [sectorId], references: [id], onDelete: Cascade)
-  rank          Int?        // 1 = first choice. Null when unranked.
+  rank          Int? // 1 = first choice. Null when unranked.
 
   @@id([applicationId, sectorId])
   @@index([sectorId])
@@ -280,7 +278,7 @@ enum PartnerTier {
 model Partner {
   id           String      @id @default(cuid())
   name         String
-  logo         String                      // Cloudinary public_id
+  logo         String // Cloudinary public_id
   url          String?
   tier         PartnerTier @default(SUPPORTING)
   displayOrder Int         @default(0)
@@ -296,9 +294,9 @@ model Partner {
 // seeing the same figure in March and November concludes you are dormant.
 model ImpactStat {
   id           String  @id @default(cuid())
-  label        String                  // "Youths trained"
-  value        String                  // "1,240" — string, so "12+" and "3" both work
-  note         String?                 // "since 2024"
+  label        String // "Youths trained"
+  value        String // "1,240" — string, so "12+" and "3" both work
+  note         String? // "since 2024"
   displayOrder Int     @default(0)
   isActive     Boolean @default(true)
 
@@ -311,11 +309,11 @@ model Document {
   id           String  @id @default(cuid())
   title        String
   description  String?
-  fileUrl      String                  // Cloudinary raw upload
-  fileSize     Int?                    // bytes. Rendered next to the link — on a
-                                       // metered 3G bundle, "PDF · 4.2 MB" is the
-                                       // difference between a tap and a bounce.
-  category     String                  // "Governance" | "Reports" | "Policies"
+  fileUrl      String // Cloudinary raw upload
+  fileSize     Int? // bytes. Rendered next to the link — on a
+  // metered 3G bundle, "PDF · 4.2 MB" is the
+  // difference between a tap and a bounce.
+  category     String // "Governance" | "Reports" | "Policies"
   displayOrder Int     @default(0)
   isPublic     Boolean @default(true)
 
@@ -332,7 +330,7 @@ model Document {
 
 model AuditLog {
   id         String   @id @default(cuid())
-  action     String   // "application.viewed", "post.published", "application.purged"
+  action     String // "application.viewed", "post.published", "application.purged"
   entityType String
   entityId   String?
   actorId    String?
