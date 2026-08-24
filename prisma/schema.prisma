@@ -1,0 +1,345 @@
+// ============================================================================
+// YouthInTech — Prisma Schema (MVP)
+//
+// This file IS the domain model document. There is no separate ERD or design
+// doc, by decision. Keep the comments current; they carry the reasoning.
+//
+// COMPLIANCE CONSTRAINT (Zambia Data Protection Act No. 3 of 2021):
+//   The database is hosted outside Zambia (Neon). Cross-border transfer of
+//   SENSITIVE personal data is restricted. Therefore this schema must NEVER
+//   contain: health data, biometrics, religious or political affiliation,
+//   NRC/passport numbers, financial account details, or criminal records.
+//   If a feature seems to need one of these, the feature is wrong. Escalate,
+//   do not add the column.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") // Neon POOLED connection — used at runtime
+  directUrl = env("DIRECT_URL")   // Neon DIRECT connection — used by migrations
+  // Migrations run through PgBouncer will fail or hang. Both vars are required.
+}
+
+// ============================================================================
+// AUTH — Better Auth. Staff accounts only. Frontliners do NOT get accounts.
+// ============================================================================
+
+enum Role {
+  ADMIN   // full access, including user management and application review
+  EDITOR  // content only — cannot see applications (they contain personal data)
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          Role      @default(EDITOR)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  accounts      Account[]
+  posts         Post[]
+  auditLogs     AuditLog[]
+  reviewedApps  Application[] @relation("ApplicationReviewer")
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?   // hashed by Better Auth. Never touch directly.
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// ============================================================================
+// SECTORS — the eight focus areas.
+// A table, not an enum, so wording can change without a migration.
+// Seeded in prisma/seed.ts. Editable by ADMIN.
+// ============================================================================
+
+model Sector {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  name         String
+  tagline      String?              // one line, used on cards
+  description  String?              // full copy for the sector page
+  icon         String?              // lucide icon name, not an image
+  displayOrder Int     @default(0)
+  isActive     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applications ApplicationSector[]
+  posts        Post[]
+  events       Event[]
+
+  @@index([isActive, displayOrder])
+}
+
+// ============================================================================
+// CONTENT — Posts and Events. Created through the admin UI, never by commit.
+// ============================================================================
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED   // hidden from the site but never deleted
+}
+
+model Post {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  excerpt     String                       // required — used for cards, SEO, OG
+  body        String                       // markdown
+  coverImage  String?                      // Cloudinary public_id, not a full URL
+  coverAlt    String?                      // required by lint when coverImage set
+  status      ContentStatus @default(DRAFT)
+  publishedAt DateTime?
+
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  sectorId String?
+  sector   Sector? @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([sectorId])
+}
+
+model Event {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  summary     String
+  description String
+  coverImage  String?
+  coverAlt    String?
+
+  startsAt DateTime
+  endsAt   DateTime?
+  venue    String?
+  isOnline Boolean @default(false)
+
+  registrationUrl String?   // external form/link. No in-house ticketing in MVP.
+  status          ContentStatus @default(DRAFT)
+
+  // Post-event evidence. This is what funders actually read.
+  attendeeCount Int?
+  recapBody     String?
+
+  sectorId String?
+  sector   Sector? @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, startsAt])
+}
+
+// ============================================================================
+// APPLICATIONS — Frontliner volunteer intake.
+// The only place personal data lives. Treat every field here as regulated.
+// ============================================================================
+
+enum ApplicationStatus {
+  NEW
+  REVIEWING
+  ACCEPTED
+  DECLINED
+  WITHDRAWN   // set when the applicant exercises their right to object
+}
+
+model Application {
+  id String @id @default(cuid())
+
+  // --- Personal data. Non-sensitive categories only. -----------------------
+  fullName    String
+  email       String
+  phone       String?
+  city        String?
+  institution String?   // school, university or employer — free text
+  ageBracket  String?   // "16-17" | "18-24" | "25-35" | "35+".
+                        // A bracket, never a date of birth. Under-18 triggers
+                        // the safeguarding flow — see below.
+  skills      String?
+  motivation  String
+
+  // --- Consent record. Required under DPA s.15. ---------------------------
+  // Consent must be unbundled: one purpose, one record. Do not collapse these
+  // into a single checkbox, and never pre-tick either of them in the form.
+  consentedAt          DateTime  // processing this application. Required.
+  marketingConsent     Boolean   @default(false)
+  marketingConsentAt   DateTime? // separate purpose: newsletters, campaigns.
+                                 // Withdrawable independently of the above.
+  privacyPolicyVersion String    // e.g. "2026-08-01". Never overwrite a
+                                 // published policy version — publish a new one.
+  guardianConsent      Boolean   @default(false)
+  // ^ Must be true before an under-18 application can move past NEW.
+  //   Enforced in the review action, not just the form.
+
+  // --- Retention. DPA: keep only as long as necessary. --------------------
+  retentionUntil DateTime   // set to submittedAt + 24 months by default
+  anonymisedAt   DateTime?  // when purged, personal fields are nulled and this
+                            // is stamped. The row survives for reporting counts.
+
+  // --- Workflow -----------------------------------------------------------
+  status      ApplicationStatus @default(NEW)
+  reviewNotes String?
+  reviewedAt  DateTime?
+  reviewerId  String?
+  reviewer    User?     @relation("ApplicationReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sectors ApplicationSector[]
+
+  @@index([status, submittedAt])
+  @@index([retentionUntil])
+  @@index([email])
+}
+
+// Join table with an optional rank.
+// This deliberately supports pick-one, pick-several AND ranked preference
+// without a migration. Enforce the actual rule in the Zod schema, not here.
+model ApplicationSector {
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  sectorId      String
+  sector        Sector      @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+  rank          Int?        // 1 = first choice. Null when unranked.
+
+  @@id([applicationId, sectorId])
+  @@index([sectorId])
+}
+
+// ============================================================================
+// CREDIBILITY LAYER — what partners and funders scan in the first 20 seconds.
+// ============================================================================
+
+enum PartnerTier {
+  STRATEGIC
+  IMPLEMENTING
+  SUPPORTING
+}
+
+model Partner {
+  id           String      @id @default(cuid())
+  name         String
+  logo         String                      // Cloudinary public_id
+  url          String?
+  tier         PartnerTier @default(SUPPORTING)
+  displayOrder Int         @default(0)
+  isActive     Boolean     @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, tier, displayOrder])
+}
+
+// Headline numbers. Editable because hardcoded stats go stale, and a funder
+// seeing the same figure in March and November concludes you are dormant.
+model ImpactStat {
+  id           String  @id @default(cuid())
+  label        String                  // "Youths trained"
+  value        String                  // "1,240" — string, so "12+" and "3" both work
+  note         String?                 // "since 2024"
+  displayOrder Int     @default(0)
+  isActive     Boolean @default(true)
+
+  updatedAt DateTime @updatedAt
+}
+
+// Governance documents: constitution, policies, annual reports.
+// Funders look for these. Serving them is a credibility feature, not a file dump.
+model Document {
+  id           String  @id @default(cuid())
+  title        String
+  description  String?
+  fileUrl      String                  // Cloudinary raw upload
+  fileSize     Int?                    // bytes. Rendered next to the link — on a
+                                       // metered 3G bundle, "PDF · 4.2 MB" is the
+                                       // difference between a tap and a bounce.
+  category     String                  // "Governance" | "Reports" | "Policies"
+  displayOrder Int     @default(0)
+  isPublic     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublic, category, displayOrder])
+}
+
+// ============================================================================
+// AUDIT — who did what. Cheap now, impossible to backfill later.
+// Also serves DPA s.45 (records of processing activities).
+// ============================================================================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String   // "application.viewed", "post.published", "application.purged"
+  entityType String
+  entityId   String?
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+}
