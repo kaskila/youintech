@@ -230,8 +230,11 @@ model Application {
   //   Enforced in the review action, not just the form.
 
   // --- Retention. DPA: keep only as long as necessary. --------------------
-  retentionUntil DateTime // set to submittedAt + 24 months by default
-  anonymisedAt   DateTime? // when purged, personal fields are nulled and this
+  retentionUntil DateTime? // Nullable pending a retention-period policy
+  // decision — not yet made. NULL means "not yet determined," never
+  // "no retention limit." The purge job MUST treat NULL as "do not
+  // purge, needs review," not skip the row silently.
+  anonymisedAt DateTime? // when purged, personal fields are nulled and this
   // is stamped. The row survives for reporting counts.
 
   // --- Workflow -----------------------------------------------------------

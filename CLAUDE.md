@@ -45,8 +45,8 @@ These are product decisions, already made. Do not relitigate them in code.
 | Framework | Next.js (App Router) | Server Components by default |
 | Language | TypeScript, `strict: true` | No `any`. No `@ts-ignore` without a comment explaining why |
 | Styling | Tailwind CSS v4 | CSS-first config via `@theme` in `app/globals.css`. No `tailwind.config.js` |
-| Database | PostgreSQL (Neon) | |
-| ORM | Prisma (v7) | Migrations committed. Never `db push` against production. Connection strings live in `prisma.config.ts` / `src/lib/db.ts`, never in `schema.prisma`'s `datasource` block — v7 deprecated `url`/`directUrl` there. CLI (migrations) uses `DIRECT_URL` (unpooled); runtime client uses `DATABASE_URL` (pooled) via `@prisma/adapter-pg` |
+| Database | PostgreSQL | Local dev uses a native local Postgres 17 instance — no Docker. Production uses Neon. Neon is never used for local development (this has been tried; a corporate DNS suffix plus a dead IPv6 route make Neon unreachable from at least one contributor's machine). See `README.md` "Local setup" |
+| ORM | Prisma (v7) | Migrations committed. Never `db push` against production. Connection strings live in `prisma.config.ts` / `src/lib/db.ts`, never in `schema.prisma`'s `datasource` block — v7 deprecated `url`/`directUrl` there. CLI (migrations) uses `DIRECT_URL`; runtime client uses `DATABASE_URL` via `@prisma/adapter-pg`. In production these are the unpooled/pooled Neon hosts respectively; locally, with no pooler, both point at the same local database |
 | Auth | Better Auth | Admin/editor only. Public pages are unauthenticated |
 | Media | Cloudinary | Signed uploads from the admin UI. Never expose the API secret client-side |
 | Email | Resend | Transactional only — application confirmations, admin notifications |
