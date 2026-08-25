@@ -29,6 +29,7 @@ export async function updateSector(formData: FormData): Promise<ActionResult> {
 
   // c. mutate
   const { id, tagline, description, icon, ...rest } = parsed.data;
+  const before = await db.sector.findUnique({ where: { id }, select: { slug: true } });
   let updated;
   try {
     updated = await db.sector.update({
@@ -57,9 +58,17 @@ export async function updateSector(formData: FormData): Promise<ActionResult> {
     },
   });
 
-  // e. revalidate
+  // e. revalidate — admin list/detail, plus every public surface that reads
+  // sectors: the programmes list, this sector's detail page (old slug too,
+  // if it changed), and the home page sector grid.
   revalidatePath("/admin/sectors");
   revalidatePath(`/admin/sectors/${id}`);
+  revalidatePath("/programmes");
+  revalidatePath(`/programmes/${updated.slug}`);
+  if (before && before.slug !== updated.slug) {
+    revalidatePath(`/programmes/${before.slug}`);
+  }
+  revalidatePath("/");
 
   // f. typed result
   return { ok: true };
@@ -110,8 +119,10 @@ export async function moveSector(formData: FormData): Promise<ActionResult> {
     },
   });
 
-  // e. revalidate
+  // e. revalidate — reordering changes listing order on both public surfaces
   revalidatePath("/admin/sectors");
+  revalidatePath("/programmes");
+  revalidatePath("/");
 
   // f. typed result
   return { ok: true };

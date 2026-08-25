@@ -7,25 +7,45 @@ import { db } from "../src/lib/db";
 // Idempotent. Safe to re-run: upserts sectors, creates the seed admin only
 // if missing. Never resets an existing admin's password on re-run.
 
+// Tagline and description are left null on purpose — content lands via the
+// admin UI, not a commit. See CLAUDE.md §2 "Non-technical people must be
+// able to publish." Icon names are lucide-react component names.
 const SECTORS = [
-  { slug: "sector-one", name: "Sector One", displayOrder: 1 },
-  { slug: "sector-two", name: "Sector Two", displayOrder: 2 },
-  { slug: "sector-three", name: "Sector Three", displayOrder: 3 },
-  { slug: "sector-four", name: "Sector Four", displayOrder: 4 },
-  { slug: "sector-five", name: "Sector Five", displayOrder: 5 },
-  { slug: "sector-six", name: "Sector Six", displayOrder: 6 },
-  { slug: "sector-seven", name: "Sector Seven", displayOrder: 7 },
-  { slug: "sector-eight", name: "Sector Eight", displayOrder: 8 },
+  { slug: "agriculture", name: "Agriculture", icon: "Sprout", displayOrder: 1 },
+  { slug: "healthcare", name: "Healthcare", icon: "HeartPulse", displayOrder: 2 },
+  { slug: "education", name: "Education", icon: "GraduationCap", displayOrder: 3 },
+  { slug: "business-finance", name: "Business & Finance", icon: "Briefcase", displayOrder: 4 },
+  { slug: "law-governance", name: "Law & Governance", icon: "Scale", displayOrder: 5 },
+  {
+    slug: "engineering-environment",
+    name: "Engineering & Environment",
+    icon: "HardHat",
+    displayOrder: 6,
+  },
+  { slug: "creative-industries", name: "Creative Industries", icon: "Palette", displayOrder: 7 },
+  { slug: "ict-computer-science", name: "ICT & Computer Science", icon: "Cpu", displayOrder: 8 },
 ];
 
 async function seedSectors() {
   for (const sector of SECTORS) {
     await db.sector.upsert({
       where: { slug: sector.slug },
-      update: { name: sector.name, displayOrder: sector.displayOrder },
+      update: { name: sector.name, icon: sector.icon, displayOrder: sector.displayOrder },
       create: sector,
     });
   }
+
+  // Drop anything left over from an earlier seed list (e.g. the original
+  // "sector-one".."sector-eight" placeholders) so re-running never leaves
+  // stale rows behind. Content relations (Post/Event) SetNull on delete;
+  // nothing real is ever expected to point at a placeholder row.
+  const { count } = await db.sector.deleteMany({
+    where: { slug: { notIn: SECTORS.map((sector) => sector.slug) } },
+  });
+  if (count > 0) {
+    console.log(`Removed ${count} stale sector row(s) not in the current seed list.`);
+  }
+
   console.log(`Seeded ${SECTORS.length} sectors.`);
 }
 

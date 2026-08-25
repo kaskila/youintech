@@ -63,10 +63,10 @@
   --color-border-strong:   var(--color-ink-300);
 
   /* --- Type ------------------------------------------------------------- */
-  /* Loaded via next/font, self-hosted, latin subset only.
+  /* Loaded via next/font in app/layout.tsx, self-hosted, latin subset only.
      Two families. Do not add a third. */
-  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --font-sans:    "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    var(--font-ibm-plex), ui-sans-serif, system-ui, sans-serif;
 
   /* Type scale — fluid, clamps to a 375px floor.
      Display sizes are for --font-display only. */
