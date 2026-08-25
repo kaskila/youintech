@@ -3,6 +3,10 @@
 Authoritative context for this repository. Read this before proposing changes.
 If a request conflicts with this file, say so and ask before proceeding.
 
+This is the only instruction file. `AGENTS.md` is deliberately untracked and
+gitignored — `next dev` regenerates it with Next.js's own breaking-changes notice,
+content this repo doesn't control, so it can't reliably hold anything of ours.
+
 ---
 
 ## 1. What this is
@@ -57,6 +61,20 @@ These are product decisions, already made. Do not relitigate them in code.
 headless CMS, or an analytics SDK without explicit approval. React state and URL state
 are sufficient for everything in v1.
 
+**Better Auth's expected table/column shape must be verified against the installed
+source** — `node_modules/@better-auth/core/src/db/schema/*.ts` — never against docs or
+recall. Docs lag; training data is stale by definition. `Account.issuer` was missing
+from `schema.prisma` for exactly this reason: nothing surfaced it until a real sign-in
+failed with a generic "Invalid email or password", because Better Auth matches
+`providerId` + `issuer` + `accountId` together before it ever compares a password. When
+a schema mismatch is suspected, read the zod schema in that package directly.
+
+`@better-auth/core` is a **direct** dependency, not just a transitive one via
+`better-auth` — `prisma/seed.ts` imports `createLocalAccountIssuer` from it. Pin it to
+an exact version, no `^`. It's Better Auth's internal package, not a stable public API
+(see their own GitHub issue #4900), and a minor bump could change behavior silently
+underneath us.
+
 ---
 
 ## 4. Architecture
@@ -72,16 +90,24 @@ app/
     partners/            # Logos, partnership case, contact CTA
     join/                # Frontliner application form
     contact/
-  (admin)/admin/         # Better Auth protected. Role-gated.
-    posts/
-    events/
-    applications/        # Review queue for Frontliner applications
-    partners/
-    media/
+  (admin)/admin/
+    login/               # Unauthenticated — the sign-in page itself.
+    (protected)/         # Route group, not a URL segment. /admin/sectors is
+                          # still /admin/sectors. Everything in here requires
+                          # a session — see the layout rule below.
+      layout.tsx
+      sectors/
+      posts/
+      events/
+      applications/      # Review queue for Frontliner applications
+      partners/
+      media/
   api/                   # Only for webhooks and Cloudinary signing. Prefer Server Actions.
 lib/
   db.ts                  # Prisma singleton
   auth.ts                # Better Auth config
+  session.ts             # getSessionUser() — cookie-cache read, for display only
+  require-admin.ts       # requireAdmin() — fresh DB read, for authorization
   cloudinary.ts
   email/                 # Resend templates + send functions
   validations/           # Zod schemas, one file per domain
@@ -103,6 +129,18 @@ prisma/
 - Public pages use ISR (`revalidate`) rather than dynamic rendering. Content changes
   rarely; revalidate on publish from the admin action.
 - Never import Prisma into a Client Component.
+- Protected admin routes live under `(admin)/admin/(protected)/`, not directly under
+  `admin/`. A layout on `admin/` itself would also wrap `admin/login/` — an
+  unauthenticated visitor to the login page would be redirected to the login page,
+  forever. The route group exists purely to scope the auth-checking layout away from
+  the one admin route that must stay reachable without a session.
+- Two different session reads, for two different purposes — do not use one for the
+  other. `session.ts` (`getSessionUser`) reads the session cookie: cheap, cache-backed,
+  fine for display (nav, "signed in as") and for redirect-if-signed-out in Server
+  Components. `require-admin.ts` (`requireAdmin`) is what every mutating Server Action
+  calls: it re-reads `role`/`isActive` from the database, not the session, because the
+  session cookie is cached for up to 60s (see `auth.ts`) — a just-deactivated user would
+  otherwise go on acting with stale claims for up to a minute.
 
 ---
 
@@ -168,21 +206,36 @@ Do not build these. Do not scaffold "for later." Do not add schema fields for th
 - Gamification, badges, points
 - Mobile app or PWA offline mode
 - The TechTok platform (separate scope, later phase)
+- **Opportunities/jobs board — DEFERRED, not cancelled.** A curated feed left stale is
+  worse than no feed at all; this needs a maintainer who isn't me before it starts.
+  Revisit if that changes.
 
 ---
 
 ## 9. Build order
 
-1. **Foundation** — Next.js + TS + Tailwind v4 tokens, Prisma schema, Neon connection,
-   Better Auth with a seeded admin user.
-2. **Admin shell** — login, protected layout, role guard.
-3. **Content engine** — Post and Event CRUD in admin, Cloudinary upload, publish flow.
-4. **Public site** — home, about, programmes, events, news. Real content, real design.
-5. **Applications** — public form, Zod validation, Resend confirmation, admin queue.
-6. **Credibility layer** — partners, impact stats, downloadable governance documents.
-7. **Polish** — SEO metadata, OG images, sitemap, Lighthouse pass, 404/500 pages.
+Vertical slices, not horizontal layers: each item below is admin CRUD (where it
+applies) plus the public page that reads it, shipped together.
 
-Ship each phase to production before starting the next. No long-lived branches.
+1. **Public layout** — header, footer, nav, design tokens applied site-wide. No content
+   yet.
+2. **Sectors page** — the public `/programmes` page, reading the `Sector` rows the admin
+   CRUD (already built) manages.
+3. **Deploy.** — the full loop, admin auth → admin CRUD → public read, proven in
+   production before adding another content type.
+4. **Stories** — `Post` admin CRUD + public `/news` list and `[slug]` detail.
+5. **Events** — `Event` admin CRUD + public `/events` list and `[slug]` detail.
+6. **Inquiries** — public `/contact` form + Resend notification.
+7. **Applications** — Frontliner application form, Zod validation, Resend confirmation,
+   admin review queue.
+8. **Home/credibility** — home page, `ImpactStat`, `Partner` logos, downloadable
+   governance documents.
+9. **Cloudinary** — signed uploads wired into Post/Event/Partner media fields. Deferred
+   until here on purpose — everything before it ships without images rather than wait.
+10. **Playwright smoke tests** — golden-path coverage across public + admin before
+    calling v1 done.
+
+Each slice deploys to production before the next begins. No long-lived branches.
 
 ---
 
