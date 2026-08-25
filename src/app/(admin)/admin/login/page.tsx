@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-surface-subtle px-4">
-      <div className="w-full max-w-sm rounded-[var(--radius-card)] border border-border bg-surface p-8 shadow-[var(--shadow-card)]">
+      <div className="w-full max-w-sm rounded-card border border-border bg-surface p-8 shadow-card">
         <h1 className="text-display-sm mb-6">Admin login</h1>
 
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-2 rounded-[var(--radius-pill)] bg-brand-900 px-4 py-2 font-medium text-white disabled:opacity-60"
+            className="mt-2 rounded-pill bg-brand-900 px-4 py-2 font-medium text-white disabled:opacity-60"
           >
             {isSubmitting ? "Signing in…" : "Sign in"}
           </button>
