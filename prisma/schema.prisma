@@ -70,6 +70,13 @@ model Account {
   id                    String    @id
   accountId             String
   providerId            String
+  // Required by Better Auth core (not optional there). For local credential
+  // accounts the value is "local:credential", produced by
+  // createLocalAccountIssuer(providerId) — import and call that rather than
+  // hardcoding it. Sign-in matches providerId + issuer + accountId BEFORE
+  // comparing passwords, so a wrong or missing value fails as "invalid email
+  // or password" with no other signal.
+  issuer                String
   userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?

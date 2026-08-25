@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { randomUUID } from "node:crypto";
 import { hashPassword } from "better-auth/crypto";
+import { createLocalAccountIssuer } from "@better-auth/core/db";
 import { db } from "../src/lib/db";
 
 // Idempotent. Safe to re-run: upserts sectors, creates the seed admin only
@@ -69,6 +70,7 @@ async function seedAdmin() {
       id: randomUUID(),
       userId: user.id,
       providerId: "credential",
+      issuer: createLocalAccountIssuer("credential"),
       accountId: user.id,
       password: passwordHash,
     },
