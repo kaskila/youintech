@@ -65,7 +65,7 @@
   /* --- Type ------------------------------------------------------------- */
   /* Loaded via next/font in app/layout.tsx, self-hosted, latin subset only.
      Two families. Do not add a third. */
-  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-sans:    var(--font-ibm-plex), ui-sans-serif, system-ui, sans-serif;
 
   /* Type scale — fluid, clamps to a 375px floor.
