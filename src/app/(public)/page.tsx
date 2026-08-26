@@ -39,10 +39,10 @@ export default async function HomePage() {
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
-                href="/our-sectors"
+                href="/programmes"
                 className="rounded-pill bg-brand-900 px-5 py-3 text-center font-medium text-white"
               >
-                Explore our sectors
+                Explore our programmes
               </Link>
               <Link
                 href="/about"

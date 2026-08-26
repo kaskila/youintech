@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { NAV_ITEMS } from "./nav-items";
 import { NavLink } from "./nav-link";
@@ -10,13 +11,14 @@ export function Header() {
   return (
     <header className="border-b border-border bg-surface">
       <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-4 px-4 py-4">
-        <Link href="/" className="flex shrink-0 items-center gap-3">
-          {/* No image mark in the header: logo_2.png is a composite
-              illustration (flag ribbon, map, AI icon, hand, and "YOUINTECH"
-              baked into the pixels as text) with no isolable figure — there's
-              nothing in it that survives a 40px circular crop, and cropping
-              would still leave a redundant, illegible echo of this wordmark
-              right next to it. The wordmark carries the identity alone. */}
+        <Link href="/" className="flex shrink-0 items-center gap-2">
+          {/* Sized to roughly the full wordmark + tagline block height
+              (~36-40px), not the wordmark's cap-height alone — a mark
+              matched to cap-height reads as invisible at this weight.
+              Centered against the whole two-line block accordingly.
+              Decorative: the wordmark alone carries the org name for
+              screen readers. */}
+          <Image src="/logo_2.png" alt="" width={40} height={40} className="h-10 w-10" />
           <span className="flex flex-col">
             <span className="font-display text-lg font-semibold text-brand-900">
               YouthInTech
