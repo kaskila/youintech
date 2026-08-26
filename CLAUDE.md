@@ -86,7 +86,9 @@ app/
     about/               # Story, team, governance docs
     our-sectors/         # The eight permanent focus areas (Sector model).
                           # NOT "programmes" — see §5, Programme is a
-                          # separate, not-yet-built model.
+                          # separate, time-bound model.
+    programmes/          # Flagship cross-sector initiatives (Programme
+                          # model). No sector relation — see §5.
     events/              # List + [slug] detail
     news/                # List + [slug] detail
     partners/            # Logos, partnership case, contact CTA
@@ -99,6 +101,7 @@ app/
                           # a session — see the layout rule below.
       layout.tsx
       sectors/
+      programmes/        # Create/edit open to EDITOR; archive is ADMIN-only.
       posts/
       events/
       applications/      # Review queue for Frontliner applications
@@ -159,11 +162,18 @@ Keep it this small. Adding a model requires justification.
 - **Sector** — the eight permanent focus areas (Agriculture, Healthcare, etc). `slug`,
   `name`, `tagline`, `description`, `icon`, `displayOrder`, `isActive`. Mostly static,
   but editable. Public route: `/our-sectors`.
+- **Programme** — flagship, cross-sector initiatives. `slug`, `title`, `summary`,
+  `description` (markdown, rendered as plain text until a renderer is added), `icon`,
+  `status: PLANNED | UPCOMING | RUNNING | COMPLETED`, `isFlagship`, `applicationsOpen`,
+  `applicationUrl` (external — no in-house application flow), `targetDate` (nullable —
+  NULL means nothing is scheduled), `displayOrder`, `contentStatus`. Public route:
+  `/programmes`. Deliberately **no** `Sector` relation — every programme is
+  cross-sector by design; don't add one to "make filtering easier." `EDITOR` can
+  create/edit; archiving (`contentStatus → ARCHIVED`) is `ADMIN`-only, same soft-delete
+  rule as everything else in this table.
 
-  **Not the same thing as `Programme`.** Sectors are permanent; a Programme (not yet
-  built) is a time-bound initiative with its own applications, and will need the
-  `/programmes` route when it lands — don't reuse `/our-sectors` for it, and don't
-  conflate the two models.
+  **Not the same thing as `Sector`.** Sectors are permanent; Programmes are time-bound
+  and can be applied to. Don't conflate the two models or their routes.
 - **Application** — Frontliner submissions. `fullName`, `email`, `phone`, `institution`,
   `sectorInterest`, `skills`, `motivation`, `status: NEW | REVIEWING | ACCEPTED |
   DECLINED`, `submittedAt`, `reviewNotes`.

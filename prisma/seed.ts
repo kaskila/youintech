@@ -49,6 +49,91 @@ async function seedSectors() {
   console.log(`Seeded ${SECTORS.length} sectors.`);
 }
 
+// Five flagship, cross-sector programmes — announced, none delivered yet.
+// status stays PLANNED and targetDate stays null until there's an actual
+// date to publish; don't backfill either just to make a card look busier.
+// Description is left null on purpose, same reasoning as Sector — content
+// lands via the admin UI, not a commit.
+const PROGRAMMES = [
+  {
+    slug: "digital-skills-bootcamps",
+    title: "Digital Skills Bootcamps",
+    summary:
+      "A 2–4 week intensive, cross-sector training programme in data literacy, AI tools, and digital entrepreneurship.",
+    icon: "Rocket",
+    displayOrder: 1,
+  },
+  {
+    slug: "builders-program",
+    title: "Builders Program",
+    summary:
+      "Cross-sector teams build working technology solutions to real Zambian problems together.",
+    icon: "Hammer",
+    displayOrder: 2,
+  },
+  {
+    slug: "national-innovation-challenge",
+    title: "National Innovation Challenge",
+    summary:
+      "Zambia's first cross-sector youth technology competition, open to every field.",
+    icon: "Trophy",
+    displayOrder: 3,
+  },
+  {
+    slug: "national-youth-technology-expo",
+    title: "National Youth Technology Expo",
+    summary:
+      "A national showcase of how young Zambians use technology to solve everyday problems.",
+    icon: "Presentation",
+    displayOrder: 4,
+  },
+  {
+    slug: "zambia-youth-in-technology-summit",
+    title: "Zambia Youth In Technology Summit",
+    summary: "National conversations about technology and the youth.",
+    icon: "Megaphone",
+    displayOrder: 5,
+  },
+];
+
+async function seedProgrammes() {
+  for (const programme of PROGRAMMES) {
+    await db.programme.upsert({
+      where: { slug: programme.slug },
+      update: {
+        title: programme.title,
+        summary: programme.summary,
+        icon: programme.icon,
+        displayOrder: programme.displayOrder,
+        status: "PLANNED",
+        isFlagship: true,
+        applicationsOpen: false,
+        targetDate: null,
+        contentStatus: "PUBLISHED",
+      },
+      create: {
+        ...programme,
+        status: "PLANNED",
+        isFlagship: true,
+        applicationsOpen: false,
+        targetDate: null,
+        contentStatus: "PUBLISHED",
+      },
+    });
+  }
+
+  // Same self-cleaning pattern as seedSectors — drop anything not in the
+  // current list rather than leave stale rows behind on re-run.
+  const { count } = await db.programme.deleteMany({
+    where: { slug: { notIn: PROGRAMMES.map((programme) => programme.slug) } },
+  });
+  if (count > 0) {
+    console.log(`Removed ${count} stale programme row(s) not in the current seed list.`);
+  }
+
+  console.log(`Seeded ${PROGRAMMES.length} programmes.`);
+}
+
 // Honest, current, verifiable-today figures only — no projections, no
 // targets. No frontliner headcount yet: that's tracked by Application,
 // which doesn't exist until a later build-order slice (CLAUDE.md §9 item 7).
@@ -127,6 +212,7 @@ async function seedAdmin() {
 
 async function main() {
   await seedSectors();
+  await seedProgrammes();
   await seedImpactStats();
   await seedAdmin();
 }

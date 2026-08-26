@@ -141,6 +141,54 @@ enum ContentStatus {
   ARCHIVED // hidden from the site but never deleted
 }
 
+// ============================================================================
+// PROGRAMMES — cross-sector flagship initiatives. Time-bound and applied-to,
+// unlike Sector (permanent, no applications). See the Sector model above for
+// the full distinction; don't conflate the two.
+// ============================================================================
+
+enum ProgrammeStatus {
+  PLANNED // announced, nothing scheduled yet
+  UPCOMING // scheduled — targetDate should be set
+  RUNNING
+  COMPLETED
+}
+
+model Programme {
+  id    String @id @default(cuid())
+  slug  String @unique
+  title String
+  summary String // required — one-line pitch, ~200 chars. Cards, detail page, SEO.
+  description String? // markdown source. Rendered as plain text for now — no
+  // markdown renderer in the stack yet (CLAUDE.md §3); real
+  // parsing lands with whatever slice actually needs styled prose.
+  coverImage String? // Cloudinary public_id, not a full URL — see Post.coverImage.
+  coverAlt   String?
+  icon       String // lucide-react component name, not an image. Required
+  // (unlike Sector.icon) — every programme card needs one.
+
+  status     ProgrammeStatus @default(PLANNED)
+  isFlagship Boolean         @default(false)
+
+  applicationsOpen Boolean @default(false)
+  applicationUrl   String? // external link. No in-house application flow —
+  // see CLAUDE.md non-goals for this slice.
+
+  targetDate DateTime? // nullable — nothing is scheduled until this is set.
+  // NULL must render as "no date yet," never a placeholder date.
+
+  displayOrder  Int           @default(0)
+  contentStatus ContentStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Deliberately NO sector relation. All flagship programmes are
+  // cross-sector by design — don't add a Sector FK "to make filtering
+  // easier." A sector-scoped initiative would be a different model.
+  @@index([contentStatus, displayOrder])
+}
+
 model Post {
   id          String        @id @default(cuid())
   slug        String        @unique

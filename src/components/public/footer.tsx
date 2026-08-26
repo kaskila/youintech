@@ -24,6 +24,9 @@ export function Footer() {
                 <Link href="/our-sectors">Our Sectors</Link>
               </li>
               <li>
+                <Link href="/programmes">Programmes</Link>
+              </li>
+              <li>
                 {/* No /about page yet — matches the header nav's existing
                     /about link (nav-items.ts). 404 until that page ships. */}
                 <Link href="/about">About</Link>

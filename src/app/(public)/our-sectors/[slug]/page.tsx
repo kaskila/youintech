@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { SectorIcon } from "@/components/public/sector-icon";
+import { DynamicIcon } from "@/components/public/dynamic-icon";
 
 // See (public)/our-sectors/page.tsx — same rationale for the revalidate window.
 export const revalidate = 3600;
@@ -71,7 +71,7 @@ export default async function SectorDetailPage({
       </Link>
 
       <div className="mt-4 flex items-center gap-3">
-        <SectorIcon name={sector.icon} className="h-10 w-10 text-brand-700" />
+        <DynamicIcon name={sector.icon} className="h-10 w-10 text-brand-700" />
         <h1 className="text-display-md">{sector.name}</h1>
       </div>
 
