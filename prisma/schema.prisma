@@ -276,6 +276,55 @@ model ApplicationSector {
 }
 
 // ============================================================================
+// INQUIRIES — public /contact form submissions. Same personal-data handling
+// pattern as Application (consent record, nullable retention, anonymisation
+// stamp) — see that model's comments for the full DPA reasoning; not
+// repeated field-by-field here.
+// ============================================================================
+
+enum InquiryCategory {
+  VOLUNTEER
+  PARTNER
+  SUPPORT
+  GENERAL
+}
+
+enum InquiryStatus {
+  NEW
+  REVIEWING
+  RESPONDED
+  CLOSED
+}
+
+model Inquiry {
+  id String @id @default(cuid())
+
+  category     InquiryCategory
+  name         String
+  email        String
+  phone        String?
+  organisation String?
+  message      String
+
+  // --- Consent record. Required under DPA s.15, same rule as Application:
+  // never pre-tick this at submission time. -------------------------------
+  consentedAt          DateTime
+  privacyPolicyVersion String
+
+  // --- Retention. NULL means "not yet determined," never "no limit" — see
+  // Application.retentionUntil for the full reasoning. ---------------------
+  retentionUntil DateTime?
+  anonymisedAt   DateTime?
+
+  status InquiryStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+// ============================================================================
 // CREDIBILITY LAYER — what partners and funders scan in the first 20 seconds.
 // ============================================================================
 

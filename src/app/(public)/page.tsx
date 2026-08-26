@@ -8,10 +8,16 @@ import heroImage from "../../../public/hero.png";
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  const sectors = await db.sector.findMany({
-    where: { isActive: true },
-    orderBy: { displayOrder: "asc" },
-  });
+  const [sectors, impactStats] = await Promise.all([
+    db.sector.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: "asc" },
+    }),
+    db.impactStat.findMany({
+      where: { isActive: true },
+      orderBy: { displayOrder: "asc" },
+    }),
+  ]);
 
   return (
     <>
@@ -48,7 +54,7 @@ export default async function HomePage() {
                 Explore programmes
               </Link>
               <Link
-                href="mailto:youintech25@gmail.com"
+                href="/contact"
                 className="rounded-pill border border-white px-5 py-3 font-medium text-white"
               >
                 Contact us
@@ -57,6 +63,29 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Empty state: render nothing rather than an empty stat row — see
+          CLAUDE.md §6 "every list renders something sensible when it has
+          zero rows," which for a credibility band means not existing. */}
+      {impactStats.length > 0 ? (
+        <section className="on-brand">
+          <div className="mx-auto max-w-page px-4 py-12 sm:py-16">
+            <dl className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+              {impactStats.map((stat) => (
+                <div key={stat.id}>
+                  <dt className="text-eyebrow uppercase opacity-75">{stat.label}</dt>
+                  <dd className="mt-1 text-display-md">
+                    {stat.value}
+                    {stat.note ? (
+                      <span className="ml-2 text-lead opacity-75">{stat.note}</span>
+                    ) : null}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-page px-4 py-16">
         <p className="text-eyebrow uppercase text-accent-600">Programmes</p>
@@ -79,6 +108,57 @@ export default async function HomePage() {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="bg-surface-subtle">
+        <div className="mx-auto max-w-page px-4 py-16">
+          <div className="max-w-content">
+            <p className="text-eyebrow uppercase text-accent-600">What we do</p>
+            <h2 className="mt-2 text-display-sm">Skills, not slogans</h2>
+            <p className="mt-4 text-ink-700">
+              YouthInTech runs hands-on training, mentorship, and project work
+              across eight sectors, led by volunteer Frontliners and delivered
+              in partnership with universities, employers, and civil society.
+              We focus on practical, employable skills over certificates for
+              their own sake — the kind of work young Zambians can point to.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-page px-4 py-16">
+        <p className="text-eyebrow uppercase text-accent-600">Get involved</p>
+        <h2 className="mt-2 text-display-sm">Three ways in</h2>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Link
+            href="/contact?category=volunteer"
+            className="rounded-card border border-border bg-surface p-5 shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift)"
+          >
+            <p className="font-display font-semibold text-brand-900">Volunteer</p>
+            <p className="mt-2 text-sm text-ink-600">
+              Join as a Frontliner and help run training in your sector.
+            </p>
+          </Link>
+          <Link
+            href="/contact?category=partner"
+            className="rounded-card border border-border bg-surface p-5 shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift)"
+          >
+            <p className="font-display font-semibold text-brand-900">Partner with us</p>
+            <p className="mt-2 text-sm text-ink-600">
+              Universities, employers, and NGOs — let&apos;s work together.
+            </p>
+          </Link>
+          <Link
+            href="/contact?category=support"
+            className="rounded-card border border-border bg-surface p-5 shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift)"
+          >
+            <p className="font-display font-semibold text-brand-900">Support our work</p>
+            <p className="mt-2 text-sm text-ink-600">
+              Get in touch about funding, in-kind support, or resources.
+            </p>
+          </Link>
+        </div>
       </section>
     </>
   );

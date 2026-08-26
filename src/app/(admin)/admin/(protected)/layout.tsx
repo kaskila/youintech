@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSessionUser } from "@/lib/session";
+import { Role } from "@/generated/prisma/enums";
 import { SignOutButton } from "./sign-out-button";
 
 export default async function ProtectedAdminLayout({
@@ -22,6 +23,11 @@ export default async function ProtectedAdminLayout({
             Dashboard
           </Link>
           <Link href="/admin/sectors">Sectors</Link>
+          {/* Inquiries hold personal data — EDITOR can't see them (same rule
+              as Application, CLAUDE.md §5), so don't even link there. */}
+          {user.role === Role.ADMIN ? (
+            <Link href="/admin/inquiries">Inquiries</Link>
+          ) : null}
         </nav>
         <div className="flex items-center gap-3 text-sm">
           <span>

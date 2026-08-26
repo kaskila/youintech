@@ -49,6 +49,32 @@ async function seedSectors() {
   console.log(`Seeded ${SECTORS.length} sectors.`);
 }
 
+// Honest, current, verifiable-today figures only — no projections, no
+// targets. No frontliner headcount yet: that's tracked by Application,
+// which doesn't exist until a later build-order slice (CLAUDE.md §9 item 7).
+// No natural unique key on ImpactStat, so this upserts by label itself
+// rather than adding a DB constraint this task didn't ask for.
+const IMPACT_STATS = [
+  { label: "Focus sectors", value: "8", note: null, displayOrder: 1 },
+  { label: "Registered NGO", value: "1", note: null, displayOrder: 2 },
+  { label: "University chapter", value: "1", note: "UNZA, Lusaka", displayOrder: 3 },
+];
+
+async function seedImpactStats() {
+  for (const stat of IMPACT_STATS) {
+    const existing = await db.impactStat.findFirst({ where: { label: stat.label } });
+    if (existing) {
+      await db.impactStat.update({
+        where: { id: existing.id },
+        data: { value: stat.value, note: stat.note, displayOrder: stat.displayOrder },
+      });
+    } else {
+      await db.impactStat.create({ data: stat });
+    }
+  }
+  console.log(`Seeded ${IMPACT_STATS.length} impact stats.`);
+}
+
 async function seedAdmin() {
   const email = process.env.SEED_ADMIN_EMAIL;
   const password = process.env.SEED_ADMIN_PASSWORD;
@@ -101,6 +127,7 @@ async function seedAdmin() {
 
 async function main() {
   await seedSectors();
+  await seedImpactStats();
   await seedAdmin();
 }
 

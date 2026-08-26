@@ -158,6 +158,10 @@ Keep it this small. Adding a model requires justification.
 - **Application** — Frontliner submissions. `fullName`, `email`, `phone`, `institution`,
   `sectorInterest`, `skills`, `motivation`, `status: NEW | REVIEWING | ACCEPTED |
   DECLINED`, `submittedAt`, `reviewNotes`.
+- **Inquiry** — public `/contact` submissions. `category: VOLUNTEER | PARTNER | SUPPORT |
+  GENERAL`, `name`, `email`, `phone`, `organisation`, `message`,
+  `status: NEW | REVIEWING | RESPONDED | CLOSED`, `createdAt`. Same consent/retention
+  pattern as `Application` — personal data, `EDITOR` can't see it either.
 - **Partner** — `name`, `logo`, `url`, `tier`, `displayOrder`.
 - **ImpactStat** — editable headline numbers for the homepage (`label`, `value`,
   `displayOrder`). Funders read these first. They must never be hardcoded in JSX.
