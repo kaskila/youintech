@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { NAV_ITEMS } from "./nav-items";
 import { NavLink } from "./nav-link";
 import { MobileMenu } from "./mobile-menu";
+import { JoinMovementLink } from "./join-movement-link";
 
 // Not sticky on purpose — costs vertical space on small screens. See
 // CLAUDE.md §2 (Zambian network conditions / small-screen budget).
@@ -10,11 +10,23 @@ export function Header() {
   return (
     <header className="border-b border-border bg-surface">
       <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-4 px-4 py-4">
-        <Link href="/" className="shrink-0">
-          {/* Source is 500x500 — next/image resizes/recompresses it down to
-              what an ~40px header mark actually needs, so the oversized
-              source never ships to the browser as-is. */}
-          <Image src="/logo_2.png" alt="YouthInTech" width={40} height={40} className="h-10 w-10" />
+        <Link href="/" className="flex shrink-0 items-center gap-3">
+          {/* No image mark in the header: logo_2.png is a composite
+              illustration (flag ribbon, map, AI icon, hand, and "YOUINTECH"
+              baked into the pixels as text) with no isolable figure — there's
+              nothing in it that survives a 40px circular crop, and cropping
+              would still leave a redundant, illegible echo of this wordmark
+              right next to it. The wordmark carries the identity alone. */}
+          <span className="flex flex-col">
+            <span className="font-display text-lg font-semibold text-brand-900">
+              YouthInTech
+            </span>
+            {/* Tagline drops below md — the wordmark alone carries the
+                header on small screens; the tagline is a nice-to-have. */}
+            <span className="hidden text-xs text-ink-500 md:block">
+              Technology is for everyone — especially YOUth.
+            </span>
+          </span>
         </Link>
 
         <nav aria-label="Primary" className="hidden md:block">
@@ -26,6 +38,10 @@ export function Header() {
             ))}
           </ul>
         </nav>
+
+        <div className="hidden md:block">
+          <JoinMovementLink />
+        </div>
 
         <MobileMenu />
       </div>

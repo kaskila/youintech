@@ -21,44 +21,86 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden">
-        <Image
-          src={heroImage}
-          alt=""
-          fill
-          priority
-          placeholder="blur"
-          sizes="100vw"
-          className="object-cover opacity-20"
-        />
-        {/* Solid overlay, not a translucent one: text contrast must hold
-            regardless of what's in the photo (busy, light-background shot),
-            so the backdrop is dominated by brand-900 rather than trusting a
-            guess about the image's tones. See globals.css contrast table. */}
-        <div className="on-brand relative bg-brand-900/90">
-          <div className="mx-auto max-w-page px-4 py-20 sm:py-28">
-            <h1 className="text-display-lg max-w-content">
-              Technology is for everyone — especially YOUth.
-            </h1>
-            <p className="mt-4 max-w-content text-lead">
-              YouthInTech (Zambia Youths in Technology Network) builds
-              practical technology skills in young Zambians across eight
-              sectors — from agriculture to ICT — so they can build careers,
-              businesses, and solutions for their own communities.
+      <section className="overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          <div className="flex flex-col justify-center px-4 py-12 sm:py-16 md:py-20 md:pl-12 md:pr-8 lg:pl-20 lg:pr-12 xl:pl-24">
+            <p className="text-eyebrow uppercase text-accent-600">
+              Zambia Youth in Technology Network
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <h1 className="mt-4 text-display-lg">
+              <span className="text-ink-900">Empowering young Zambians through</span>{" "}
+              <span className="text-brand-900">technology.</span>
+            </h1>
+            <p className="mt-6 max-w-content text-lead text-ink-600">
+              YouthInTech builds practical technology skills in young Zambians
+              across eight sectors — from agriculture to ICT — so they can
+              build careers, businesses, and solutions for their own
+              communities.
+            </p>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
                 href="/our-sectors"
-                className="rounded-pill bg-white px-5 py-3 font-medium text-brand-900"
+                className="rounded-pill bg-brand-900 px-5 py-3 text-center font-medium text-white"
               >
                 Explore our sectors
               </Link>
               <Link
-                href="/contact"
-                className="rounded-pill border border-white px-5 py-3 font-medium text-white"
+                href="/about"
+                className="rounded-pill border border-brand-900 px-5 py-3 text-center font-medium text-brand-900"
               >
-                Contact us
+                About YouthInTech
               </Link>
+            </div>
+
+            {/* Reserved: a credibility line ("N,NNN+ young people trained")
+                once Application counts exist to back a real number, and
+                consented Frontliner photos exist to show faces. See
+                CLAUDE.md §2 — don't ship a claim with no data behind it. */}
+
+            {/* Image beneath the CTAs on small screens — the split layout
+                only works once there's room for two columns. */}
+            <div className="relative mt-10 h-64 overflow-hidden rounded-card sm:h-80 md:hidden">
+              <Image
+                src={heroImage}
+                alt=""
+                fill
+                priority
+                placeholder="blur"
+                sizes="100vw"
+                className="object-cover object-bottom"
+              />
+            </div>
+          </div>
+
+          {/* Image bleeds to the viewport's right edge — this column is
+              deliberately outside any max-w-page wrapper. */}
+          <div className="relative hidden md:block">
+            <div className="relative h-full">
+              <Image
+                src={heroImage}
+                alt=""
+                fill
+                priority
+                placeholder="blur"
+                sizes="50vw"
+                className="object-cover object-bottom"
+              />
+            </div>
+
+            {/* Sits on the image with clear space beneath it, not glued to
+                the section's bottom edge — bottom-16 clears the seam where
+                the next (on-brand) section starts. */}
+            <div className="absolute bottom-16 left-6 max-w-xs rounded-card bg-surface p-5 shadow-(--shadow-lift)">
+              <span
+                aria-hidden="true"
+                className="flex h-10 w-10 items-center justify-center rounded-pill bg-brand-900 font-display text-lg font-semibold text-white"
+              >
+                &ldquo;
+              </span>
+              <p className="mt-3 font-display text-base font-semibold text-ink-900">
+                Technology is for everyone — especially YOUth.
+              </p>
+              <span aria-hidden="true" className="mt-3 block h-0.5 w-10 bg-accent-600" />
             </div>
           </div>
         </div>

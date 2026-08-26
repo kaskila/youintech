@@ -75,7 +75,7 @@
   --text-eyebrow--letter-spacing: 0.12em;
   --text-eyebrow--font-weight: 600;
 
-  --text-display-lg: clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem);
+  --text-display-lg: clamp(2.25rem, 1.4rem + 3.6vw, 3.75rem);
   --text-display-lg--line-height: 1.02;
   --text-display-lg--letter-spacing: -0.03em;
   --text-display-lg--font-weight: 700;

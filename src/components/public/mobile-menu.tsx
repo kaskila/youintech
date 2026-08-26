@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { NAV_ITEMS } from "./nav-items";
 import { NavLink } from "./nav-link";
+import { JoinMovementLink } from "./join-movement-link";
 
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +27,7 @@ export function MobileMenu() {
           aria-label="Primary"
           className="w-full border-t border-border pt-4 md:hidden"
         >
-          <ul className="flex flex-col gap-3 text-base font-medium">
+          <ul className="flex flex-col items-start gap-3 text-base font-medium">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <NavLink href={item.href} onNavigate={() => setIsOpen(false)}>
@@ -35,6 +36,13 @@ export function MobileMenu() {
               </li>
             ))}
           </ul>
+
+          {/* CTA moves inside the mobile panel — no room for it in the
+              collapsed header bar. See CLAUDE.md §2 small-screen budget. */}
+          <JoinMovementLink
+            className="mt-5 w-full"
+            onNavigate={() => setIsOpen(false)}
+          />
         </nav>
       ) : null}
     </>

@@ -26,9 +26,16 @@ export function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       onClick={onNavigate}
-      className={active ? `text-brand-900 ${className ?? ""}` : `text-ink-700 ${className ?? ""}`}
+      className={`inline-flex flex-col items-center gap-1.5 text-ink-700 hover:text-brand-800 ${className ?? ""}`}
     >
-      {children}
+      <span>{children}</span>
+      {/* Underline rule marks the active item — never a colour change on its
+          own, per the design brief. Rendered transparent when inactive so
+          the rule doesn't shift layout on route change. */}
+      <span
+        aria-hidden="true"
+        className={`h-0.5 w-4 rounded-pill ${active ? "bg-brand-900" : "bg-transparent"}`}
+      />
     </Link>
   );
 }
