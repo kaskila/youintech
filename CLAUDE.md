@@ -57,6 +57,31 @@ These are product decisions, already made. Do not relitigate them in code.
 | Validation | Zod | One schema per form, shared between client and server action |
 | Hosting | Vercel | |
 
+**The Vercel build command is `prisma migrate deploy && next build`** (see
+`package.json` `"build"`), not just `next build`. Committed there, not set as a Vercel
+dashboard override — the two steps must run in this exact order every time, and that
+shouldn't depend on someone remembering to configure a project setting correctly.
+
+- **Always `migrate deploy`, never `migrate dev`, against production.** `migrate dev`
+  diffs the schema against a shadow database it creates and drops on every run (see
+  README "Local setup" for why the local role needs `CREATEDB`) — the production Neon
+  role deliberately does **not** have `CREATEDB`, which makes running `migrate dev`
+  against it fail outright rather than silently. `migrate deploy` only applies
+  already-committed migration files in order: no diffing, no shadow database, safe to
+  run unattended.
+- **Migrations must complete before `next build` runs, not after.** `/our-sectors/[slug]`
+  and `/programmes/[slug]` use `generateStaticParams`, which queries the live database
+  during the build's "Collecting page data" phase — confirmed by deliberately building
+  against an unreachable database and watching it fail there, not gracefully. A build
+  against an unmigrated database fails the same way. The `&&` chain is what guarantees
+  the database is ready before that query runs.
+- **`DATABASE_URL` / `DIRECT_URL` are set in Vercel for the Production environment
+  only, never Preview.** There is one database. If Preview had them too, a build
+  triggered from a branch would run `migrate deploy` against production before that
+  branch is even merged. Preview builds are expected to fail at the same
+  `generateStaticParams` step above until a separate database exists for them —
+  that's the correct failure, not a bug to work around.
+
 **Do not add** a state management library, a component library, an ORM alternative, a
 headless CMS, or an analytics SDK without explicit approval. React state and URL state
 are sufficient for everything in v1.
