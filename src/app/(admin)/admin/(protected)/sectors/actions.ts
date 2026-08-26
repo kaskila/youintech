@@ -59,14 +59,14 @@ export async function updateSector(formData: FormData): Promise<ActionResult> {
   });
 
   // e. revalidate — admin list/detail, plus every public surface that reads
-  // sectors: the programmes list, this sector's detail page (old slug too,
+  // sectors: the sectors list, this sector's detail page (old slug too,
   // if it changed), and the home page sector grid.
   revalidatePath("/admin/sectors");
   revalidatePath(`/admin/sectors/${id}`);
-  revalidatePath("/programmes");
-  revalidatePath(`/programmes/${updated.slug}`);
+  revalidatePath("/our-sectors");
+  revalidatePath(`/our-sectors/${updated.slug}`);
   if (before && before.slug !== updated.slug) {
-    revalidatePath(`/programmes/${before.slug}`);
+    revalidatePath(`/our-sectors/${before.slug}`);
   }
   revalidatePath("/");
 
@@ -121,7 +121,7 @@ export async function moveSector(formData: FormData): Promise<ActionResult> {
 
   // e. revalidate — reordering changes listing order on both public surfaces
   revalidatePath("/admin/sectors");
-  revalidatePath("/programmes");
+  revalidatePath("/our-sectors");
   revalidatePath("/");
 
   // f. typed result

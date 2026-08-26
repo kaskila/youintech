@@ -84,7 +84,9 @@ app/
   (public)/              # Unauthenticated. Static or ISR wherever possible.
     page.tsx             # Home
     about/               # Story, team, governance docs
-    programmes/          # The eight sectors + programme tracks
+    our-sectors/         # The eight permanent focus areas (Sector model).
+                          # NOT "programmes" — see §5, Programme is a
+                          # separate, not-yet-built model.
     events/              # List + [slug] detail
     news/                # List + [slug] detail
     partners/            # Logos, partnership case, contact CTA
@@ -154,7 +156,14 @@ Keep it this small. Adding a model requires justification.
 - **Event** — `slug`, `title`, `description`, `startsAt`, `endsAt`, `venue`, `isOnline`,
   `registrationUrl`, `coverImage`, `status`. Past events are **not** deleted — they are
   the credibility evidence.
-- **Programme** — the sector/track definitions. Mostly static, but editable.
+- **Sector** — the eight permanent focus areas (Agriculture, Healthcare, etc). `slug`,
+  `name`, `tagline`, `description`, `icon`, `displayOrder`, `isActive`. Mostly static,
+  but editable. Public route: `/our-sectors`.
+
+  **Not the same thing as `Programme`.** Sectors are permanent; a Programme (not yet
+  built) is a time-bound initiative with its own applications, and will need the
+  `/programmes` route when it lands — don't reuse `/our-sectors` for it, and don't
+  conflate the two models.
 - **Application** — Frontliner submissions. `fullName`, `email`, `phone`, `institution`,
   `sectorInterest`, `skills`, `motivation`, `status: NEW | REVIEWING | ACCEPTED |
   DECLINED`, `submittedAt`, `reviewNotes`.
@@ -223,7 +232,7 @@ applies) plus the public page that reads it, shipped together.
 
 1. **Public layout** — header, footer, nav, design tokens applied site-wide. No content
    yet.
-2. **Sectors page** — the public `/programmes` page, reading the `Sector` rows the admin
+2. **Sectors page** — the public `/our-sectors` page, reading the `Sector` rows the admin
    CRUD (already built) manages.
 3. **Deploy.** — the full loop, admin auth → admin CRUD → public read, proven in
    production before adding another content type.

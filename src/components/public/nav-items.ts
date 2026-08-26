@@ -2,7 +2,7 @@
 // page exists.
 export const NAV_ITEMS = [
   { href: "/", label: "Home" },
-  { href: "/programmes", label: "Programmes" },
+  { href: "/our-sectors", label: "Our Sectors" },
   { href: "/about", label: "About" },
 ] as const;
 

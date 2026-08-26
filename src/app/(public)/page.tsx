@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { SectorCard } from "@/components/public/sector-card";
 import heroImage from "../../../public/hero.png";
 
-// See (public)/programmes/page.tsx — same rationale for the revalidate window.
+// See (public)/our-sectors/page.tsx — same rationale for the revalidate window.
 export const revalidate = 3600;
 
 export default async function HomePage() {
@@ -48,10 +48,10 @@ export default async function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                href="/programmes"
+                href="/our-sectors"
                 className="rounded-pill bg-white px-5 py-3 font-medium text-brand-900"
               >
-                Explore programmes
+                Explore our sectors
               </Link>
               <Link
                 href="/contact"
@@ -88,12 +88,12 @@ export default async function HomePage() {
       ) : null}
 
       <section className="mx-auto max-w-page px-4 py-16">
-        <p className="text-eyebrow uppercase text-accent-600">Programmes</p>
+        <p className="text-eyebrow uppercase text-accent-600">Sectors</p>
         <h2 className="mt-2 text-display-sm">Our eight focus areas</h2>
 
         {sectors.length === 0 ? (
           <p className="mt-8 rounded-card border border-border bg-surface-subtle p-6 text-ink-600">
-            Programme details are being updated. Check back soon.
+            Sector details are being updated. Check back soon.
           </p>
         ) : (
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

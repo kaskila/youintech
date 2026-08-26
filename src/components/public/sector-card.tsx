@@ -14,7 +14,7 @@ export function SectorCard({
 }) {
   return (
     <Link
-      href={`/programmes/${slug}`}
+      href={`/our-sectors/${slug}`}
       className="group flex flex-col gap-3 rounded-card border border-border bg-surface p-5 shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift)"
     >
       <SectorIcon name={icon} className="h-8 w-8 text-brand-700" />

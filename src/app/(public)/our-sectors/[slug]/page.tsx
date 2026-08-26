@@ -5,7 +5,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { SectorIcon } from "@/components/public/sector-icon";
 
-// See (public)/programmes/page.tsx — same rationale for the revalidate window.
+// See (public)/our-sectors/page.tsx — same rationale for the revalidate window.
 export const revalidate = 3600;
 
 // Deduped per-request: generateMetadata and the page component both need
@@ -66,8 +66,8 @@ export default async function SectorDetailPage({
 
   return (
     <div className="mx-auto max-w-content px-4 py-12 sm:py-16">
-      <Link href="/programmes" className="text-sm">
-        ← All programmes
+      <Link href="/our-sectors" className="text-sm">
+        ← All sectors
       </Link>
 
       <div className="mt-4 flex items-center gap-3">
@@ -83,7 +83,7 @@ export default async function SectorDetailPage({
         <p className="mt-6 whitespace-pre-line text-ink-700">{sector.description}</p>
       ) : (
         <p className="mt-6 text-ink-600">
-          Full details for this programme are coming soon.
+          Full details for this sector are coming soon.
         </p>
       )}
     </div>

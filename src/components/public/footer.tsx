@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="on-brand">
       <div className="mx-auto max-w-page px-4 py-10">
-        <div className="flex flex-col gap-8 md:flex-row md:justify-between">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="font-display text-lg font-semibold">YouthInTech</p>
             <p className="mt-2 max-w-content text-sm">
@@ -15,13 +15,35 @@ export function Footer() {
           </div>
 
           <div className="text-sm">
-            <p className="text-eyebrow uppercase opacity-75">Contact</p>
-            <p className="mt-2">
-              <a href="mailto:youintech25@gmail.com">youintech25@gmail.com</a>
-            </p>
-            <p>
-              <a href="tel:+260975600929">+260 975 600929</a>
-            </p>
+            <p className="text-eyebrow uppercase opacity-75">Explore</p>
+            <ul className="mt-2 flex flex-col gap-1.5">
+              <li>
+                <Link href="/">Home</Link>
+              </li>
+              <li>
+                <Link href="/our-sectors">Our Sectors</Link>
+              </li>
+              <li>
+                {/* No /about page yet — matches the header nav's existing
+                    /about link (nav-items.ts). 404 until that page ships. */}
+                <Link href="/about">About</Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="text-sm">
+            <p className="text-eyebrow uppercase opacity-75">Get in touch</p>
+            <ul className="mt-2 flex flex-col gap-1.5">
+              <li>
+                <Link href="/contact">Contact us</Link>
+              </li>
+              <li>
+                <a href="mailto:youintech25@gmail.com">youintech25@gmail.com</a>
+              </li>
+              <li>
+                <a href="tel:+260975600929">+260 975 600929</a>
+              </li>
+            </ul>
           </div>
 
           <div className="text-sm">
