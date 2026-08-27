@@ -42,6 +42,9 @@ export default async function ProgrammesPage() {
               summary={programme.summary}
               icon={programme.icon}
               status={programme.status}
+              coverImage={programme.coverImage}
+              coverAlt={programme.coverAlt}
+              imageSizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             />
           ))}
         </div>

@@ -54,6 +54,13 @@ async function seedSectors() {
 // date to publish; don't backfill either just to make a card look busier.
 // Description is left null on purpose, same reasoning as Sector — content
 // lands via the admin UI, not a commit.
+//
+// coverImage/coverAlt: real photos live in /public/programmes, one per
+// slug — not Cloudinary yet (that wiring is a later build-order slice, see
+// CLAUDE.md §9 item 9), just a local path in the same field Cloudinary will
+// eventually populate. Alt text describes what's actually in each photo,
+// not the programme name — the name is already the card title right next
+// to it, so a name-echoing alt would just be noise for a screen reader.
 const PROGRAMMES = [
   {
     slug: "digital-skills-bootcamps",
@@ -62,6 +69,9 @@ const PROGRAMMES = [
       "A 2–4 week intensive, cross-sector training programme in data literacy, AI tools, and digital entrepreneurship.",
     icon: "Rocket",
     displayOrder: 1,
+    coverImage: "/programmes/digital-skills-bootcamps.jpg",
+    coverAlt:
+      "Five young Zambians sit in a row at laptops in a bright training room, focused on their screens, with a large monitor displaying lines of code behind them.",
   },
   {
     slug: "builders-program",
@@ -70,6 +80,9 @@ const PROGRAMMES = [
       "Cross-sector teams build working technology solutions to real Zambian problems together.",
     icon: "Hammer",
     displayOrder: 2,
+    coverImage: "/programmes/builders-program.jpg",
+    coverAlt:
+      "Four young Zambians gather around a laptop, one pointing at the screen while another takes notes in a notebook, with colourful sticky notes on a whiteboard behind them.",
   },
   {
     slug: "national-innovation-challenge",
@@ -78,6 +91,9 @@ const PROGRAMMES = [
       "Zambia's first cross-sector youth technology competition, open to every field.",
     icon: "Trophy",
     displayOrder: 3,
+    coverImage: "/programmes/national-innovation-challenge.jpg",
+    coverAlt:
+      "A young presenter speaks into a microphone beside two teammates and a small model house fitted with a solar panel, presenting on stage in front of a large screen.",
   },
   {
     slug: "national-youth-technology-expo",
@@ -86,6 +102,9 @@ const PROGRAMMES = [
       "A national showcase of how young Zambians use technology to solve everyday problems.",
     icon: "Presentation",
     displayOrder: 4,
+    coverImage: "/programmes/national-youth-technology-expo.jpg",
+    coverAlt:
+      "Two young Zambians talk beside a drone displayed on an exhibition table, surrounded by banners and other attendees in a technology expo hall.",
   },
   {
     slug: "zambia-youth-in-technology-summit",
@@ -93,6 +112,9 @@ const PROGRAMMES = [
     summary: "National conversations about technology and the youth.",
     icon: "Megaphone",
     displayOrder: 5,
+    coverImage: "/programmes/zambia-youth-in-technology-summit.jpg",
+    coverAlt:
+      "A packed auditorium audience faces a lit stage where a panel of six people sit before a large screen, viewed from behind the seated crowd.",
   },
 ];
 
@@ -105,6 +127,8 @@ async function seedProgrammes() {
         summary: programme.summary,
         icon: programme.icon,
         displayOrder: programme.displayOrder,
+        coverImage: programme.coverImage,
+        coverAlt: programme.coverAlt,
         status: "PLANNED",
         isFlagship: true,
         applicationsOpen: false,

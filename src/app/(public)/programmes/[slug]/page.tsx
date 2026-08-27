@@ -1,6 +1,7 @@
 import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { DynamicIcon } from "@/components/public/dynamic-icon";
@@ -68,6 +69,22 @@ export default async function ProgrammeDetailPage({
       <Link href="/programmes" className="text-sm">
         ← All programmes
       </Link>
+
+      {/* Not every programme has a photo yet (coverImage is admin-editable,
+          defaults to null) — fall back to no banner rather than a broken
+          or placeholder image. */}
+      {programme.coverImage ? (
+        <div className="relative mt-4 h-56 w-full overflow-hidden rounded-card sm:h-72">
+          <Image
+            src={programme.coverImage}
+            alt={programme.coverAlt ?? ""}
+            fill
+            priority
+            sizes="(min-width: 768px) 704px, 100vw"
+            className="object-cover"
+          />
+        </div>
+      ) : null}
 
       <div className="mt-4 flex items-center gap-3">
         <DynamicIcon name={programme.icon} className="h-10 w-10 text-brand-700" />
