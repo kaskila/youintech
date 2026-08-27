@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HandHeart, Handshake, Gift } from "lucide-react";
+import { HandHeart, Handshake, Gift, BadgeCheck } from "lucide-react";
 import { db } from "@/lib/db";
 import { SectorCard } from "@/components/public/sector-card";
 import { ProgrammeCard } from "@/components/public/programme-card";
@@ -122,14 +122,23 @@ export default async function HomePage() {
         <section className="bg-surface-subtle">
           <div className="mx-auto max-w-page px-4 py-12 sm:py-16 lg:py-20">
             <p className="text-eyebrow uppercase text-accent-600">Impact</p>
-            <dl className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-3">
+            <dl className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3">
               {impactStats.map((stat) => (
-                <div key={stat.id}>
+                <div
+                  key={stat.id}
+                  className="flex flex-col gap-2 rounded-card border border-border bg-surface p-4"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100"
+                  >
+                    <BadgeCheck className="h-5 w-5 text-brand-700" />
+                  </span>
                   <dt className="text-eyebrow uppercase text-ink-600">{stat.label}</dt>
-                  <dd className="mt-1 text-display-md">
+                  <dd className="text-display-sm">
                     {stat.value}
                     {stat.note ? (
-                      <span className="ml-2 text-lead text-ink-600">{stat.note}</span>
+                      <span className="ml-1 text-sm text-ink-600">{stat.note}</span>
                     ) : null}
                   </dd>
                 </div>
@@ -148,7 +157,7 @@ export default async function HomePage() {
             Sector details are being updated. Check back soon.
           </p>
         ) : (
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
             {sectors.map((sector) => (
               <SectorCard
                 key={sector.id}

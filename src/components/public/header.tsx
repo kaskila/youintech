@@ -26,7 +26,7 @@ export function Header() {
             {/* Tagline drops below md — the wordmark alone carries the
                 header on small screens; the tagline is a nice-to-have. */}
             <span className="hidden text-xs text-ink-500 md:block">
-              Technology is for everyone — especially YOUth.
+              Technology is for everyone - especially YOUth.
             </span>
           </span>
         </Link>
