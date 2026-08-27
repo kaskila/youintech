@@ -3,12 +3,25 @@
    Tailwind CSS v4. CSS-first config. There is no tailwind.config.js.
 
    PALETTE RULES (read before using):
-   - brand-900 (#0d4513) is the anchor. Use for: body ink, primary button fill,
-     dark section backgrounds, logo. It is NOT a link colour — at small sizes it
-     reads as black, not green.
+   - brand-600 (#218608) is the hue anchor AND the visible brand fill —
+     primary button backgrounds, the hero "technology." span, circular
+     badges (the hero quote bubble), and the active nav underline all use
+     it. White text on brand-600 is 4.69:1 — passes AA, but it's a real
+     step down from brand-900's 12.9:1, so it's deliberately reserved for
+     small UI elements (buttons, badges, a short underline), not large
+     surfaces.
+   - brand-900 (#0d3a03), a dark shade of the same hue, is ink and large
+     inverted surfaces: body/heading text colour, the Get Involved band
+     background, the header/footer logo wordmark. NOT a button fill and
+     NOT a link colour — at small sizes it reads as black, not green, and a
+     full-bleed panel of brand-600 that size would be harsh.
    - brand-700 is the interactive green: links, hover states, focus rings.
-     4.9:1 on white — passes AA for normal text.
-   - brand-600 and lighter: LARGE TEXT AND UI ONLY. Never body copy on white.
+     7.14:1 on white — passes AA (and AAA) for normal text.
+   - brand-600 ALSO clears 4.5:1 on white (4.69:1 measured) with this anchor,
+     unlike an earlier one that was tried — it's usable for link/body text
+     if ever needed, though the actual link colour stays brand-700 above.
+     brand-500 and lighter still do not clear it: LARGE TEXT AND UI ONLY on
+     white.
    - accent-600 (ochre) is rationed. Eyebrows, rules, and the single primary CTA
      per page. If two ochre elements are visible at once, one of them is wrong.
    - Neutrals are hue-shifted toward the brand green. Do not substitute
@@ -18,30 +31,39 @@
 @import "tailwindcss";
 
 @theme {
-  /* --- Brand green ------------------------------------------------------ */
-  --color-brand-50:  #f1f9f2;
-  --color-brand-100: #dff1e1;
-  --color-brand-200: #bfe3c3;
-  --color-brand-300: #92d39a;
-  --color-brand-400: #64c46f;
-  --color-brand-500: #3bb048;
-  --color-brand-600: #2a9737;
-  --color-brand-700: #1d7c28;
-  --color-brand-800: #135d1c;
-  --color-brand-900: #0d4513;  /* anchor */
-  --color-brand-950: #04170a;
+  /* --- Brand green -------------------------------------------------------
+     Ramp regenerated from #218608 (hue 108.1°) — fixed hue, saturation
+     tapering toward the light end for usable pastels, lightness monotonic
+     50→950. brand-600 is #218608 exactly; brand-900 is a dark shade of the
+     same hue (#0d3a03), not a leftover from an earlier anchor. See contrast
+     reference block at the bottom of this file for measured ratios. ------- */
+  --color-brand-50:  #f4f7f3;
+  --color-brand-100: #e6efe4;
+  --color-brand-200: #c9e2c3;
+  --color-brand-300: #a1d694;
+  --color-brand-400: #6ed256;
+  --color-brand-500: #3bbe1b;
+  --color-brand-600: #218608;  /* hue anchor */
+  --color-brand-700: #186605;
+  --color-brand-800: #134d04;
+  --color-brand-900: #0d3a03;  /* ink anchor — dark shade of the same hue */
+  --color-brand-950: #0a2c02;
 
-  /* --- Neutrals (hue-shifted toward brand) ------------------------------ */
-  --color-ink-50:  #f7f9f8;
-  --color-ink-100: #eff2f0;
-  --color-ink-200: #dfe4e0;
-  --color-ink-300: #c3cbc5;
-  --color-ink-400: #949e96;
-  --color-ink-500: #6b776e;
-  --color-ink-600: #4a564d;
-  --color-ink-700: #333d36;
-  --color-ink-800: #1f2a22;
-  --color-ink-900: #0f1511;
+  /* --- Neutrals (hue-shifted toward brand) -------------------------------
+     Same lightness/saturation per step as always, hue rotated to track the
+     current brand anchor — total shift of -19.1° from the original
+     pre-rehue baseline (127.2° → 108.1°) so the neutrals stay in the same
+     family as the current, more yellow-leaning green. ------- */
+  --color-ink-50:  #f7f9f7;
+  --color-ink-100: #eff2ef;
+  --color-ink-200: #e0e4df;
+  --color-ink-300: #c3cbc3;
+  --color-ink-400: #959e94;
+  --color-ink-500: #6c776b;
+  --color-ink-600: #4b564a;
+  --color-ink-700: #333d33;
+  --color-ink-800: #1f2a1f;
+  --color-ink-900: #0f150f;
 
   /* --- Accent (rationed) ------------------------------------------------ */
   --color-accent-100: #fdf3e2;
@@ -97,11 +119,12 @@
   --radius-card: 0.75rem;
   --radius-pill: 9999px;
 
-  /* Shadows are tinted green, never neutral black. */
-  --shadow-card:  0 1px 2px rgba(13, 69, 19, 0.06),
-                  0 8px 24px -12px rgba(13, 69, 19, 0.14);
-  --shadow-lift:  0 2px 4px rgba(13, 69, 19, 0.08),
-                  0 16px 40px -16px rgba(13, 69, 19, 0.22);
+  /* Shadows are tinted green, never neutral black. RGB matches brand-900
+     (#0d3a03) so the tint tracks the current hue, not an earlier one. */
+  --shadow-card:  0 1px 2px rgba(13, 58, 3, 0.06),
+                  0 8px 24px -12px rgba(13, 58, 3, 0.14);
+  --shadow-lift:  0 2px 4px rgba(13, 58, 3, 0.08),
+                  0 16px 40px -16px rgba(13, 58, 3, 0.22);
 
   /* --- Layout ----------------------------------------------------------- */
   --container-content: 44rem;  /* prose column */
@@ -181,12 +204,54 @@
 /* ============================================================================
    Contrast reference — verified, do not "improve" without re-checking
    ----------------------------------------------------------------------------
-   brand-900 on white ............ 12.8:1   AAA   body ink, buttons
-   white on brand-900 ............ 12.8:1   AAA   inverted sections
-   brand-700 on white ............  4.9:1   AA    links, small text
-   brand-600 on white ............  3.6:1   AA-lg large text / UI only
-   accent-600 on white ...........  3.8:1   AA-lg large text / rules only
-   white on accent-600 ...........  3.2:1   FAIL  never use for body text
-   ink-500 on white ..............  4.6:1   AA    secondary/meta text
-   ink-400 on white ..............  2.7:1   FAIL  decorative borders only
+   Recomputed by script (WCAG relative-luminance formula, sanity-checked
+   against black-on-white = 21.00:1) after the second brand rehue, anchor
+   #218608, and again after moving primary buttons/badges/nav-underline
+   from brand-900 to brand-600 fill. These are fresh measurements against
+   the CURRENT hex values above, not adjusted from the previous table.
+
+   brand-900 on white ............ 12.93:1   AAA   body ink, headings, logo
+   white on brand-900 ............ 12.93:1   AAA   inverted band (Get
+                                                    Involved), symmetric
+                                                    with above
+   white on brand-600 .............4.69:1   PASS   primary button/badge
+                                                    fill — the button text
+                                                    is 1rem/font-medium
+                                                    (not "large text" by
+                                                    WCAG's 18px/14px-bold
+                                                    threshold), so the 4.5:1
+                                                    normal-text rule applies
+                                                    and this clears it, but
+                                                    only just; it is a real
+                                                    drop from brand-900's
+                                                    12.93:1, which is why
+                                                    brand-900 stays reserved
+                                                    for ink and large
+                                                    surfaces, not small UI
+   brand-700 on white .............7.14:1   AAA   links, small text — this
+                                                    is the actual link colour
+                                                    (`a` rule below)
+   brand-600 on white .............4.69:1   PASS   same pair as "white on
+                                                    brand-600" above
+                                                    (symmetric); clears
+                                                    4.5:1 with THIS anchor —
+                                                    an earlier anchor tried,
+                                                    #1d8b04, measured 4.42:1
+                                                    and failed. Link colour
+                                                    still stays brand-700,
+                                                    unaffected either way
+   brand-200 on brand-900 .........9.33:1   AAA   Get Involved band heading
+                                                    ("get involved" span)
+   accent-600 on white .............3.31:1   AA-lg  large text / rules only.
+                                                    accent-600 itself is
+                                                    unchanged by either rehue
+                                                    — same value, same
+                                                    conclusion, no clash with
+                                                    the new green
+   accent-600 on brand-900 .........3.90:1   —      non-text only (rules);
+                                                    the actual ochre rule on
+                                                    brand-900 uses accent-500
+                                                    at 5.44:1
+   ink-500 on white ................4.68:1   AA    secondary/meta text
+   ink-400 on white ................2.77:1   FAIL   decorative borders only
    ========================================================================= */

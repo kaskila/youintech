@@ -38,7 +38,7 @@ export default async function HomePage() {
             </p>
             <h1 className="mt-4 text-display-lg">
               <span className="text-ink-900">Empowering young Zambians through</span>{" "}
-              <span className="text-brand-900">technology.</span>
+              <span className="text-brand-600">technology.</span>
             </h1>
             <p className="mt-6 max-w-content text-lead text-ink-600">
               YouthInTech builds practical technology skills in young Zambians
@@ -49,7 +49,7 @@ export default async function HomePage() {
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
                 href="/programmes"
-                className="rounded-pill bg-brand-900 px-5 py-3 text-center font-medium text-white"
+                className="rounded-pill bg-brand-600 px-5 py-3 text-center font-medium text-white"
               >
                 Explore our programmes
               </Link>
@@ -102,7 +102,7 @@ export default async function HomePage() {
             <div className="absolute bottom-16 left-6 max-w-xs rounded-card bg-surface p-5 shadow-(--shadow-lift)">
               <span
                 aria-hidden="true"
-                className="flex h-10 w-10 items-center justify-center rounded-pill bg-brand-900 font-display text-lg font-semibold text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-pill bg-brand-600 font-display text-lg font-semibold text-white"
               >
                 &ldquo;
               </span>

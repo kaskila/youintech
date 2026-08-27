@@ -128,7 +128,7 @@ export function ContactForm({ defaultCategory }: { defaultCategory: InquiryCateg
       <button
         type="submit"
         disabled={isPending}
-        className="self-start rounded-pill bg-brand-900 px-5 py-2.5 font-medium text-white disabled:opacity-60"
+        className="self-start rounded-pill bg-brand-600 px-5 py-2.5 font-medium text-white disabled:opacity-60"
       >
         {isPending ? "Sending…" : "Send message"}
       </button>

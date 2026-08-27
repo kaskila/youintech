@@ -34,7 +34,7 @@ export function NavLink({
           the rule doesn't shift layout on route change. */}
       <span
         aria-hidden="true"
-        className={`h-0.5 w-4 rounded-pill ${active ? "bg-brand-900" : "bg-transparent"}`}
+        className={`h-0.5 w-4 rounded-pill ${active ? "bg-brand-600" : "bg-transparent"}`}
       />
     </Link>
   );
