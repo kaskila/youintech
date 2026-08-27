@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { HandHeart, Handshake, Gift } from "lucide-react";
 import { db } from "@/lib/db";
 import { SectorCard } from "@/components/public/sector-card";
 import { ProgrammeCard } from "@/components/public/programme-card";
+import { GetInvolvedCard } from "@/components/public/get-involved-card";
 import heroImage from "../../../public/hero.png";
 
 // See (public)/our-sectors/page.tsx — same rationale for the revalidate window.
@@ -199,40 +201,31 @@ export default async function HomePage() {
 
       <section className="on-brand">
         <div className="mx-auto max-w-page px-4 py-12 sm:py-16 lg:py-20">
-          {/* Not accent-600 here — see globals.css contrast table: accent-600
-              only clears AA against light backgrounds. Matches the label
-              treatment already used on-brand elsewhere (footer, impact). */}
-          <p className="text-eyebrow uppercase opacity-75">Get involved</p>
-          <h2 className="mt-2 text-display-sm">Three ways in</h2>
+          <h2 className="text-display-sm">
+            <span className="text-white">Three ways to</span>{" "}
+            <span className="text-brand-200">get involved</span>
+          </h2>
+          <span aria-hidden="true" className="mt-4 block h-0.5 w-10 bg-accent-500" />
 
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <Link
+            <GetInvolvedCard
               href="/contact?category=volunteer"
-              className="rounded-card border border-border bg-surface p-5 shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift)"
-            >
-              <p className="font-display font-semibold text-brand-900">Volunteer</p>
-              <p className="mt-2 text-sm text-ink-600">
-                Join as a Frontliner and help run training in your sector.
-              </p>
-            </Link>
-            <Link
+              icon={HandHeart}
+              title="Volunteer"
+              description="Join as a Frontliner and help run training in your sector."
+            />
+            <GetInvolvedCard
               href="/contact?category=partner"
-              className="rounded-card border border-border bg-surface p-5 shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift)"
-            >
-              <p className="font-display font-semibold text-brand-900">Partner with us</p>
-              <p className="mt-2 text-sm text-ink-600">
-                Universities, employers, and NGOs — let&apos;s work together.
-              </p>
-            </Link>
-            <Link
+              icon={Handshake}
+              title="Partner with us"
+              description="Universities, employers, and NGOs — let's work together."
+            />
+            <GetInvolvedCard
               href="/contact?category=support"
-              className="rounded-card border border-border bg-surface p-5 shadow-(--shadow-card) transition-shadow hover:shadow-(--shadow-lift)"
-            >
-              <p className="font-display font-semibold text-brand-900">Support our work</p>
-              <p className="mt-2 text-sm text-ink-600">
-                Get in touch about funding, in-kind support, or resources.
-              </p>
-            </Link>
+              icon={Gift}
+              title="Support our work"
+              description="Get in touch about funding, in-kind support, or resources."
+            />
           </div>
         </div>
       </section>
