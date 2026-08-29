@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { House, Layers, Rocket, Info, Mail, Phone, MapPin } from "lucide-react";
+import { House, Layers, Rocket, Sparkles, Info, Mail, Phone, MapPin } from "lucide-react";
 import { SOCIAL_LINKS } from "@/lib/social-links";
 import { FacebookIcon, LinkedinIcon, TiktokIcon } from "./social-icons";
 
@@ -8,6 +8,7 @@ const EXPLORE_LINKS = [
   { href: "/", label: "Home", icon: House },
   { href: "/our-sectors", label: "Our Sectors", icon: Layers },
   { href: "/programmes", label: "Programmes", icon: Rocket },
+  { href: "/opportunities", label: "Opportunities", icon: Sparkles },
   { href: "/about", label: "About", icon: Info },
 ] as const;
 

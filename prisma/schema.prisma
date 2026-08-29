@@ -124,9 +124,10 @@ model Sector {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  applications ApplicationSector[]
-  posts        Post[]
-  events       Event[]
+  applications  ApplicationSector[]
+  posts         Post[]
+  events        Event[]
+  opportunities Opportunity[]
 
   @@index([isActive, displayOrder])
 }
@@ -187,6 +188,78 @@ model Programme {
   // cross-sector by design — don't add a Sector FK "to make filtering
   // easier." A sector-scoped initiative would be a different model.
   @@index([contentStatus, displayOrder])
+}
+
+// ============================================================================
+// OPPORTUNITIES — scholarships, fellowships, jobs, grants, internships,
+// training, and competitions posted on behalf of external organisations.
+// Approved in place of the original "deferred" decision (see CLAUDE.md §8),
+// conditional on one thing: automatic expiry.
+//
+// THE RULE — do not remove or weaken this: an opportunity disappears from
+// the public page the moment its deadline passes. This is enforced by the
+// public query's own filter (deadline >= now), not by a cron job, not by a
+// status flag an editor has to remember to flip. See
+// src/app/(public)/opportunities/page.tsx. A stale opportunities feed
+// (expired listings still showing) is worse than a thin one — if this
+// filter is ever weakened, the feature reverts to deferred.
+// ============================================================================
+
+enum OpportunityType {
+  SCHOLARSHIP
+  FELLOWSHIP
+  INTERNSHIP
+  JOB
+  GRANT
+  TRAINING
+  COMPETITION
+  OTHER
+}
+
+model Opportunity {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  title        String
+  summary      String // required — one-line pitch, ~200 chars. Cards, SEO.
+  description  String? // markdown source. Rendered as plain text for now —
+  // see Programme.description for the same rationale.
+  organisation String // who is actually offering this — YouthInTech is the
+  // publisher of the listing, not (usually) the offering party.
+
+  type OpportunityType
+
+  location String?
+  isRemote Boolean @default(false)
+
+  deadline DateTime // REQUIRED. The whole model exists to auto-expire on
+  // this date — see the header comment above. Zod rejects a
+  // past deadline on create (not on update — editing a listing
+  // after its deadline has passed, e.g. to fix a typo before
+  // archiving it, must still be possible).
+
+  applyUrl String // external — no in-house application flow, same pattern
+  // as Programme.applicationUrl.
+
+  eligibility String?
+
+  sectorId String?
+  sector   Sector? @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+  // Nullable, unlike Programme's deliberate lack of a Sector relation:
+  // an opportunity is very often sector-specific (an agriculture grant, a
+  // healthcare fellowship) but not always (a general leadership
+  // scholarship) — nullable covers both without needing two models.
+
+  coverImage String? // Cloudinary URL or legacy /public path — see
+  coverAlt   String? // Programme.coverImage for the same dual-format rule.
+
+  contentStatus ContentStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Serves the public query directly: WHERE contentStatus = PUBLISHED AND
+  // deadline >= now(), ORDER BY deadline ASC.
+  @@index([contentStatus, deadline])
 }
 
 model Post {

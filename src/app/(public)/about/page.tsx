@@ -103,9 +103,9 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="flex flex-col justify-center px-4 py-12 sm:py-16 lg:py-20 lg:pl-12 lg:pr-8 xl:pl-20">
             <p className="text-eyebrow uppercase text-accent-600">About Us</p>
-            {/* <h1 className="mt-2 text-display-md">
-              Technology is for everyone — especially YOUth.
-            </h1> */}
+            <h1 className="mt-2 text-display-md">
+              Technology the Engine of Innovation.
+            </h1>
             <p className="mt-4 max-w-content text-lead text-ink-600">
               YouthInTech is a national registered NGO founded in 2025,
               headquartered at the University of Zambia in Lusaka.

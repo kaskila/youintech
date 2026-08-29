@@ -114,6 +114,8 @@ app/
                           # separate, time-bound model.
     programmes/          # Flagship cross-sector initiatives (Programme
                           # model). No sector relation — see §5.
+    opportunities/       # List only, no [slug] — cards link out to
+                          # applyUrl. Auto-expiring, see §5.
     events/              # List + [slug] detail
     news/                # List + [slug] detail
     partners/            # Logos, partnership case, contact CTA
@@ -127,6 +129,7 @@ app/
       layout.tsx
       sectors/
       programmes/        # Create/edit open to EDITOR; archive is ADMIN-only.
+      opportunities/     # Same EDITOR/ADMIN split as programmes.
       posts/
       events/
       applications/      # Review queue for Frontliner applications
@@ -199,6 +202,26 @@ Keep it this small. Adding a model requires justification.
 
   **Not the same thing as `Sector`.** Sectors are permanent; Programmes are time-bound
   and can be applied to. Don't conflate the two models or their routes.
+- **Opportunity** — scholarships, fellowships, internships, jobs, grants, training, and
+  competitions posted on behalf of external organisations. `slug`, `title`, `summary`,
+  `description` (markdown, plain text for now — same as `Programme.description`),
+  `organisation` (who's actually offering it), `type: SCHOLARSHIP | FELLOWSHIP |
+  INTERNSHIP | JOB | GRANT | TRAINING | COMPETITION | OTHER`, `location` (nullable),
+  `isRemote`, `deadline` (**required** — see below), `applyUrl` (external, no in-house
+  application flow), `eligibility` (nullable), `sectorId` (nullable FK to `Sector` —
+  unlike `Programme`, an opportunity is very often sector-specific, so nullable covers
+  both cases without two models), `coverImage`/`coverAlt`, `contentStatus`. Public
+  route: `/opportunities`. No public `[slug]` detail page — cards link straight out to
+  `applyUrl`. `EDITOR` can create/edit; archiving is `ADMIN`-only, same rule as
+  `Programme`.
+
+  **Auto-expiry is the condition this model was approved on** (it was DEFERRED — see
+  §8 history). The public query filters `deadline >= now()` directly — there is no
+  status flag, no cron job, nothing for an editor to remember. An opportunity
+  disappears from `/opportunities` the moment its deadline passes, full stop. If this
+  filter is ever weakened (e.g. "just hide it via a flag instead"), the feature reverts
+  to deferred — a stale opportunities feed is worse than a thin one. See the
+  `Opportunity` model comment in `schema.prisma` and `(public)/opportunities/page.tsx`.
 - **Application** — Frontliner submissions. `fullName`, `email`, `phone`, `institution`,
   `sectorInterest`, `skills`, `motivation`, `status: NEW | REVIEWING | ACCEPTED |
   DECLINED`, `submittedAt`, `reviewNotes`.
@@ -254,9 +277,13 @@ Do not build these. Do not scaffold "for later." Do not add schema fields for th
 - Gamification, badges, points
 - Mobile app or PWA offline mode
 - The TechTok platform (separate scope, later phase)
-- **Opportunities/jobs board — DEFERRED, not cancelled.** A curated feed left stale is
-  worse than no feed at all; this needs a maintainer who isn't me before it starts.
-  Revisit if that changes.
+
+**Approved out of this list:** the opportunities/jobs board was deferred above on the
+grounds that a curated feed left stale is worse than no feed at all. It's now built
+(`Opportunity` model, `/opportunities`, `/admin/opportunities` — see §5) — approved
+specifically because expiry is automatic (query-enforced, not a flag someone has to
+remember), which was the whole objection. If that guarantee is ever weakened, this
+reverts to deferred; don't relitigate the underlying concern, fix the query.
 
 ---
 

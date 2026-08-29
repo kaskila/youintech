@@ -3,6 +3,7 @@ export const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/our-sectors", label: "Our Sectors" },
   { href: "/programmes", label: "Programmes" },
+  { href: "/opportunities", label: "Opportunities" },
   { href: "/about", label: "About" },
 ] as const;
 
