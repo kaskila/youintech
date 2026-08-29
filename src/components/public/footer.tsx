@@ -8,8 +8,6 @@ const EXPLORE_LINKS = [
   { href: "/", label: "Home", icon: House },
   { href: "/our-sectors", label: "Our Sectors", icon: Layers },
   { href: "/programmes", label: "Programmes", icon: Rocket },
-  // No /about page yet — matches the header nav's existing /about link
-  // (nav-items.ts). 404 until that page ships.
   { href: "/about", label: "About", icon: Info },
 ] as const;
 
