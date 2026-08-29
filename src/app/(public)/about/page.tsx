@@ -103,9 +103,9 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="flex flex-col justify-center px-4 py-12 sm:py-16 lg:py-20 lg:pl-12 lg:pr-8 xl:pl-20">
             <p className="text-eyebrow uppercase text-accent-600">About Us</p>
-            <h1 className="mt-2 text-display-md">
-              Technology is for everyone-especially YOUth.
-            </h1>
+            {/* <h1 className="mt-2 text-display-md">
+              Technology is for everyone — especially YOUth.
+            </h1> */}
             <p className="mt-4 max-w-content text-lead text-ink-600">
               YouthInTech is a national registered NGO founded in 2025,
               headquartered at the University of Zambia in Lusaka.
@@ -168,9 +168,9 @@ export default function AboutPage() {
                 MORE lines, not fewer, since less width per line means
                 more wraps. Measured empirically at 1280px viewport. */}
             <h2 className="mx-auto max-w-5xl text-display-lg">
-              We don&apos;t train people to become technology professionals
-              we train people to use technology as professionals in their
-              own field.
+              We don&apos;t train people to become technology professionals,
+              we train people to use technology as professionals in
+              their own field.
             </h2>
           </blockquote>
           <p className="mx-auto mt-6 max-w-content text-lead text-ink-600">
@@ -188,7 +188,7 @@ export default function AboutPage() {
             <p className="mt-3 text-lead text-ink-700">
               A Zambia where every young person, in every sector and
               community, is equipped to harness technology for growth,
-              problem solving, and national development.
+              problem-solving, and national development.
             </p>
           </div>
           <div className="rounded-card border border-border bg-surface p-6 sm:p-8">
@@ -247,7 +247,7 @@ export default function AboutPage() {
             <p className="text-eyebrow uppercase text-accent-600">Sectors</p>
             <h2 className="mt-2 text-display-sm">Eight sectors, one approach</h2>
             <p className="mt-4 max-w-content text-lead text-ink-600">
-              YouthInTech applies technology across eight sectors, because
+              YouthInTech applies technology across eight sectors — because
               every field needs people who can put technology to work on
               its problems, not just the ICT sector.
             </p>
@@ -303,7 +303,7 @@ export default function AboutPage() {
           <h2 className="text-display-sm">Get in touch</h2>
           <p className="mt-3 max-w-content text-brand-100">
             Questions about our sectors, programmes, or how to volunteer or
-            partner with us, contact YouthInTech directly.
+            partner with us — contact YouthInTech directly.
           </p>
           <Link
             href="/contact"

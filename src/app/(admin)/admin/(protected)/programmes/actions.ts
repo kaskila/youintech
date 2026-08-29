@@ -49,6 +49,13 @@ export async function createProgramme(formData: FormData): Promise<ActionResult>
     return { ok: false, error: "Add an application link before turning applications on." };
   }
 
+  // c2. the upload widget (CloudinaryImageUpload) already refuses to upload
+  // without alt text, but that's client-side UX — this is the actual
+  // control (CLAUDE.md §7). Guards a raw POST that skips the widget.
+  if (parsed.data.coverImage && !parsed.data.coverAlt) {
+    return { ok: false, error: "Add alt text for the cover image." };
+  }
+
   // d. mutate
   const { description, coverImage, coverAlt, applicationUrl, ...rest } = parsed.data;
   let created;
@@ -107,6 +114,11 @@ export async function updateProgramme(formData: FormData): Promise<ActionResult>
   // c. see createProgramme
   if (parsed.data.applicationsOpen && !parsed.data.applicationUrl) {
     return { ok: false, error: "Add an application link before turning applications on." };
+  }
+
+  // c2. see createProgramme
+  if (parsed.data.coverImage && !parsed.data.coverAlt) {
+    return { ok: false, error: "Add alt text for the cover image." };
   }
 
   // d. mutate

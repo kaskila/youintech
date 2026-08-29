@@ -52,7 +52,7 @@ These are product decisions, already made. Do not relitigate them in code.
 | Database | PostgreSQL | Local dev uses a native local Postgres 17 instance — no Docker. Production uses Neon. Neon is never used for local development (this has been tried; a corporate DNS suffix plus a dead IPv6 route make Neon unreachable from at least one contributor's machine). See `README.md` "Local setup" |
 | ORM | Prisma (v7) | Migrations committed. Never `db push` against production. Connection strings live in `prisma.config.ts` / `src/lib/db.ts`, never in `schema.prisma`'s `datasource` block — v7 deprecated `url`/`directUrl` there. CLI (migrations) uses `DIRECT_URL`; runtime client uses `DATABASE_URL` via `@prisma/adapter-pg`. In production these are the unpooled/pooled Neon hosts respectively; locally, with no pooler, both point at the same local database |
 | Auth | Better Auth | Admin/editor only. Public pages are unauthenticated |
-| Media | Cloudinary | Signed uploads from the admin UI. Never expose the API secret client-side |
+| Media | Cloudinary | Signed uploads from the admin UI. Never expose the API secret client-side. Installed (`src/lib/cloudinary.ts`, signing route at `src/app/api/cloudinary/sign`, `CloudinaryImageUpload` component) and proven against `Programme.coverImage`/`coverAlt`. `Post`, `Event`, and `Partner` still take plain paths until their own admin CRUD slices land — see §9 |
 | Email | Resend | Transactional only — application confirmations, admin notifications |
 | Validation | Zod | One schema per form, shared between client and server action |
 | Hosting | Vercel | |
@@ -271,15 +271,21 @@ applies) plus the public page that reads it, shipped together.
    CRUD (already built) manages.
 3. **Deploy.** — the full loop, admin auth → admin CRUD → public read, proven in
    production before adding another content type.
-4. **Stories** — `Post` admin CRUD + public `/news` list and `[slug]` detail.
-5. **Events** — `Event` admin CRUD + public `/events` list and `[slug]` detail.
-6. **Inquiries** — public `/contact` form + Resend notification.
-7. **Applications** — Frontliner application form, Zod validation, Resend confirmation,
+4. **Cloudinary infrastructure** — signed direct-to-browser uploads
+   (`src/lib/cloudinary.ts`, the signing route, the `CloudinaryImageUpload` component),
+   proven against `Programme.coverImage`/`coverAlt`. Originally planned for after every
+   other content type (see git history); moved here because §2's "non-technical people
+   must be able to publish" is a higher-priority constraint than sequential build
+   order, and a paste-a-URL field for a cover image fails that constraint outright.
+5. **Stories** — `Post` admin CRUD + public `/news` list and `[slug]` detail. Cover
+   image uses the upload widget from (4), not a paste-a-URL field.
+6. **Events** — `Event` admin CRUD + public `/events` list and `[slug]` detail. Same
+   upload widget as Stories.
+7. **Inquiries** — public `/contact` form + Resend notification.
+8. **Applications** — Frontliner application form, Zod validation, Resend confirmation,
    admin review queue.
-8. **Home/credibility** — home page, `ImpactStat`, `Partner` logos, downloadable
-   governance documents.
-9. **Cloudinary** — signed uploads wired into Post/Event/Partner media fields. Deferred
-   until here on purpose — everything before it ships without images rather than wait.
+9. **Home/credibility** — home page, `ImpactStat`, `Partner` logos (same upload
+   widget), downloadable governance documents.
 10. **Playwright smoke tests** — golden-path coverage across public + admin before
     calling v1 done.
 

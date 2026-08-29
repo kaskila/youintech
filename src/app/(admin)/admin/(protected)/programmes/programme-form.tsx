@@ -7,6 +7,7 @@ import { programmeFieldsSchema } from "@/lib/validations/programme";
 import type { ActionResult } from "@/lib/action-result";
 import type { Programme } from "@/generated/prisma/client";
 import { ProgrammeStatus } from "@/generated/prisma/enums";
+import { CloudinaryImageUpload } from "@/components/admin/image-upload";
 
 const inputClass =
   "rounded-md border border-border-strong px-3 py-2 text-ink-800 outline-none focus-visible:border-brand-700";
@@ -135,29 +136,20 @@ export function ProgrammeForm({ programme }: { programme?: Programme }) {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="coverImage" className="text-sm font-medium text-ink-700">
+        <span className="text-sm font-medium text-ink-700">
           Cover image <span className="font-normal text-ink-500">(optional)</span>
-        </label>
-        <input
-          id="coverImage"
-          name="coverImage"
-          defaultValue={programme?.coverImage ?? ""}
-          maxLength={300}
-          placeholder="Cloudinary public_id — no upload flow yet"
-          className={inputClass}
-        />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="coverAlt" className="text-sm font-medium text-ink-700">
-          Cover image alt text <span className="font-normal text-ink-500">(optional)</span>
-        </label>
-        <input
-          id="coverAlt"
-          name="coverAlt"
-          defaultValue={programme?.coverAlt ?? ""}
-          maxLength={300}
-          className={inputClass}
+        </span>
+        {/* Existing values may be a Cloudinary URL or a plain /public path
+            from before this widget existed (e.g. the seeded programmes) —
+            the preview and the public pages render either one unchanged,
+            see next.config.ts remotePatterns + programme-card.tsx. */}
+        <CloudinaryImageUpload
+          folder="programmes"
+          fieldName="coverImage"
+          altFieldName="coverAlt"
+          defaultValue={programme?.coverImage}
+          defaultAlt={programme?.coverAlt}
+          label="Cover image"
         />
       </div>
 
