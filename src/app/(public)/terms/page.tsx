@@ -17,7 +17,7 @@ export default function TermsPage() {
       <p className="mt-6 text-lead text-ink-600">
         These terms cover your use of this website, operated by YouthInTech (Zambia
         Youths in Technology Network). There are no accounts, no payments, and no user
-        content on this site — just information, and a form to contact us — so these
+        content on this site, just information, and a form to contact us, so these
         terms are short.
       </p>
 
@@ -41,7 +41,7 @@ export default function TermsPage() {
 
       <h2 className="mt-10 text-display-sm">External links</h2>
       <p className="mt-4 text-ink-700">
-        This site links out to other organisations&apos; websites — an opportunity&apos;s
+        This site links out to other organisations&apos; websites, an opportunity&apos;s
         application page, a programme&apos;s registration form, a partner&apos;s site,
         our social media. We don&apos;t control those sites and aren&apos;t responsible
         for their content, availability, or how they handle your information once
@@ -51,8 +51,8 @@ export default function TermsPage() {
 
       <h2 className="mt-10 text-display-sm">No warranty</h2>
       <p className="mt-4 text-ink-700">
-        We try to keep the information on this site — programme statuses, opportunity
-        deadlines, event dates — accurate and current, but we don&apos;t guarantee it.
+        We try to keep the information on this site, programme statuses, opportunity
+        deadlines, event dates, accurate and current, but we don&apos;t guarantee it.
         Before you rely on a deadline or a date for something important, confirm it
         directly with the organisation offering it, or with us.
       </p>

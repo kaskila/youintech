@@ -41,10 +41,7 @@ export default async function HomePage() {
               <span className="text-brand-600">technology.</span>
             </h1>
             <p className="mt-6 max-w-content text-lead text-ink-600">
-              YouthInTech builds practical technology skills in young Zambians
-              across eight sectors — from agriculture to ICT — so they can
-              build careers, businesses, and solutions for their own
-              communities.
+              Building the skills, community and opportunities for every young person to innovate, solve real problems and shape Zambia’s future.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link

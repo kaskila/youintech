@@ -286,6 +286,22 @@ model Post {
   @@index([sectorId])
 }
 
+// ============================================================================
+// EVENTS — conferences, workshops, meetups, and trainings YouthInTech runs
+// or co-hosts.
+//
+// THE OPPOSITE RULE FROM OPPORTUNITY — do not apply that pattern here by
+// mistake: a past event is NEVER auto-hidden, expired, or deleted.
+// Opportunities expire because a stale listing (a scholarship whose
+// deadline has passed) actively damages credibility — see the Opportunity
+// model comment above. Events are the inverse: a growing history of past
+// events IS the credibility, the proof partners and funders are scanning
+// for (CLAUDE.md §1). So the public query never filters on `startsAt` —
+// only on `status = PUBLISHED` — and instead sorts published rows into two
+// sections by comparing `startsAt` to the current time: UPCOMING (soonest
+// first) and PAST (most recent first). See (public)/events/page.tsx.
+// ============================================================================
+
 model Event {
   id          String  @id @default(cuid())
   slug        String  @unique
