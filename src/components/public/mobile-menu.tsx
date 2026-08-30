@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { NAV_ITEMS } from "./nav-items";
 import { NavLink } from "./nav-link";
 import { JoinMovementLink } from "./join-movement-link";
+import { useMobileNavOpen } from "./mobile-nav-open-context";
 
 export function MobileMenu() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setIsOpen } = useMobileNavOpen();
 
   return (
     <>
@@ -14,7 +14,7 @@ export function MobileMenu() {
         type="button"
         aria-expanded={isOpen}
         aria-controls="mobile-nav"
-        onClick={() => setIsOpen((open) => !open)}
+        onClick={() => setIsOpen(!isOpen)}
         className="rounded-md border border-border-strong p-2 text-ink-700 md:hidden"
       >
         <span aria-hidden="true">{isOpen ? "✕" : "☰"}</span>

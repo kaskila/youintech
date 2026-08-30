@@ -25,7 +25,12 @@ export const INQUIRY_CATEGORY_PARAMS: Record<string, InquiryCategory> = {
 // version — see Inquiry.privacyPolicyVersion in schema.prisma. MUST match
 // the "Version" heading on /privacy exactly — that page's whole point is
 // to be the real document this field has, until now, only claimed to cite.
-export const CURRENT_PRIVACY_POLICY_VERSION = "2026-08";
+//
+// Bumped 2026-08-30 (day-precision, not a new month) to add Jotform to the
+// "Third parties and international transfer" section — the policy's
+// substance changed, so per the rule above this could not just be edited
+// in place under the existing "2026-08" version.
+export const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-30";
 
 // Same fixed set as Application.ageBracket — a bracket, never a date of
 // birth. "16-17" is the only bracket below 18 in this set, so it's what

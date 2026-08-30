@@ -74,6 +74,18 @@ export default function PrivacyPage() {
         We don&apos;t run analytics or advertising trackers on this site.
       </p>
 
+      <h3 className="mt-6 font-display text-lg font-semibold text-brand-900">
+        Support chat (Jotform)
+      </h3>
+      <p className="mt-2 text-ink-700">
+        A &ldquo;Chat with us&rdquo; button is available on public pages. Nothing loads or is
+        sent anywhere until you click it — visiting the site, or even browsing with the
+        button visible, sends Jotform nothing. If you do click it and start a
+        conversation, whatever you type is sent to and processed by Jotform, our support
+        chat provider, to generate a reply. See &ldquo;Third parties and international
+        transfer&rdquo; below for what that means.
+      </p>
+
       <h2 className="mt-10 text-display-sm">Our basis for processing it</h2>
       <p className="mt-4 text-ink-700">
         We rely on your consent: you tick a box, separate from anything else on the
@@ -129,6 +141,17 @@ export default function PrivacyPage() {
           <strong>Cloudinary</strong> stores the images you see on the site (sector
           and programme photos, for example). Cloudinary does not receive the personal
           information you submit through our forms only images our own staff upload.
+        </li>
+        <li>
+          <strong>Jotform</strong> powers the &ldquo;Chat with us&rdquo; support widget.
+          Jotform receives nothing about you until you click that button. If you do, and
+          you send a message, Jotform receives the content of that conversation
+          (whatever you choose to type, which may include things like your name or
+          email if you offer them) to generate a reply. Jotform&apos;s own
+          infrastructure also loads New Relic, a website-performance monitoring service,
+          as part of running that chat widget. We don&apos;t control that, and it
+          isn&apos;t something we&apos;ve added ourselves. Both process data outside
+          Zambia.
         </li>
       </ul>
 
