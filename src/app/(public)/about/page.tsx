@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import aboutHeroImage from "../../../../public/about/hero_about.jpg";
+import aboutHeroImage from "../../../../public/about/about_hero.png";
 
 const description =
   "YouthInTech is a national registered NGO founded in 2025, headquartered at the University of Zambia in Lusaka, equipping young Zambians across every sector with digital skills, mentorship, and innovation opportunities.";

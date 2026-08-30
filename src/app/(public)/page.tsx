@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { SectorCard } from "@/components/public/sector-card";
 import { ProgrammeCard } from "@/components/public/programme-card";
 import { GetInvolvedCard } from "@/components/public/get-involved-card";
-import heroImage from "../../../public/hero.png";
+import heroImage from "../../../public/hero_2.png";
 
 // See (public)/our-sectors/page.tsx — same rationale for the revalidate window.
 export const revalidate = 3600;
@@ -99,7 +99,7 @@ export default async function HomePage() {
             {/* Sits on the image with clear space beneath it, not glued to
                 the section's bottom edge — bottom-16 clears the seam where
                 the next section starts. */}
-            <div className="absolute bottom-16 left-6 max-w-xs rounded-card bg-surface p-5 shadow-(--shadow-lift)">
+            {/* <div className="absolute bottom-16 left-6 max-w-xs rounded-card bg-surface p-5 shadow-(--shadow-lift)">
               <span
                 aria-hidden="true"
                 className="flex h-10 w-10 items-center justify-center rounded-pill bg-brand-600 font-display text-lg font-semibold text-white"
@@ -110,7 +110,7 @@ export default async function HomePage() {
                 Technology is for everyone — especially YOUth.
               </p>
               <span aria-hidden="true" className="mt-3 block h-0.5 w-10 bg-accent-600" />
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

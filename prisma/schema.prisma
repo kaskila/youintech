@@ -358,10 +358,17 @@ model Application {
   //   Enforced in the review action, not just the form.
 
   // --- Retention. DPA: keep only as long as necessary. --------------------
-  retentionUntil DateTime? // Nullable pending a retention-period policy
-  // decision — not yet made. NULL means "not yet determined," never
-  // "no retention limit." The purge job MUST treat NULL as "do not
-  // purge, needs review," not skip the row silently.
+  // DECIDED 2026-08 (see /privacy "How long we keep it"): 24 months from
+  // last contact, then personal fields are anonymised (anonymisedAt below).
+  // Set on insert by the Application submission action — see
+  // Inquiry.retentionUntil / submitInquiry (contact/actions.ts) for the
+  // same pattern, already wired; this model's own submission flow doesn't
+  // exist yet (CLAUDE.md §9 "Applications" is still unbuilt), so nothing
+  // sets this field on this model yet. Still nullable so a row created
+  // before either the decision or that action exists reads as "not yet
+  // determined," never "no retention limit" — the purge job MUST treat
+  // NULL as "do not purge, needs review," not skip the row silently.
+  retentionUntil DateTime?
   anonymisedAt DateTime? // when purged, personal fields are nulled and this
   // is stamped. The row survives for reporting counts.
 
@@ -427,13 +434,32 @@ model Inquiry {
   organisation String?
   message      String
 
+  // --- Age & safeguarding. Same pattern as Application.ageBracket: a
+  // bracket, never a date of birth. "16-17" is the only bracket below 18
+  // in this fixed set, so it's what triggers the guardian-consent
+  // requirement below — enforced in submitInquiry (contact/actions.ts),
+  // not just hidden in the contact form's UI. -----------------------------
+  ageBracket String? // "16-17" | "18-24" | "25-35" | "35+"
+
   // --- Consent record. Required under DPA s.15, same rule as Application:
-  // never pre-tick this at submission time. -------------------------------
+  // never pre-tick either checkbox at submission time. ---------------------
   consentedAt          DateTime
   privacyPolicyVersion String
+  guardianConsent      Boolean @default(false)
+  // ^ Required (enforced in submitInquiry, a cross-field check — see that
+  //   action) when ageBracket is "16-17". Same rule as
+  //   Application.guardianConsent, but checked at submission time here
+  //   rather than deferred to a review action, since /contact has no
+  //   review step an under-18 submission could otherwise be held at.
+  guardianName  String? // required by the action when ageBracket is "16-17"
+  guardianEmail String? // required by the action when ageBracket is "16-17"
 
-  // --- Retention. NULL means "not yet determined," never "no limit" — see
-  // Application.retentionUntil for the full reasoning. ---------------------
+  // --- Retention. DECIDED 2026-08 (see /privacy "How long we keep it"):
+  // 24 months from last contact (submission), then personal fields are
+  // anonymised (anonymisedAt below). Set on insert by submitInquiry. NULL
+  // still means "not yet determined" for any row predating this decision,
+  // never "no retention limit" — see Application.retentionUntil for the
+  // full reasoning, including the purge-job rule for NULL rows.
   retentionUntil DateTime?
   anonymisedAt   DateTime?
 

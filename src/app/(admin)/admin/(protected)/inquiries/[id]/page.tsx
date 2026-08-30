@@ -61,6 +61,21 @@ export default async function InquiryDetailPage({
           <dt className="text-eyebrow uppercase text-ink-500">Message</dt>
           <dd className="whitespace-pre-line text-ink-800">{inquiry.message}</dd>
         </div>
+        {inquiry.ageBracket ? (
+          <div>
+            <dt className="text-eyebrow uppercase text-ink-500">Age range</dt>
+            <dd className="text-ink-800">{inquiry.ageBracket}</dd>
+          </div>
+        ) : null}
+        {inquiry.guardianConsent ? (
+          <div>
+            <dt className="text-eyebrow uppercase text-ink-500">Guardian consent</dt>
+            <dd className="text-sm text-ink-600">
+              {inquiry.guardianName} ·{" "}
+              <a href={`mailto:${inquiry.guardianEmail}`}>{inquiry.guardianEmail}</a>
+            </dd>
+          </div>
+        ) : null}
         <div>
           <dt className="text-eyebrow uppercase text-ink-500">Submitted</dt>
           <dd className="text-ink-800">{formatDateTime(inquiry.createdAt)}</dd>
@@ -72,6 +87,12 @@ export default async function InquiryDetailPage({
             {inquiry.privacyPolicyVersion}
           </dd>
         </div>
+        {inquiry.retentionUntil ? (
+          <div>
+            <dt className="text-eyebrow uppercase text-ink-500">Retained until</dt>
+            <dd className="text-sm text-ink-600">{formatDateTime(inquiry.retentionUntil)}</dd>
+          </div>
+        ) : null}
       </dl>
 
       <InquiryStatusForm id={inquiry.id} status={inquiry.status} />

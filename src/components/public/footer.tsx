@@ -104,8 +104,6 @@ export function Footer() {
           </p>
           <nav aria-label="Legal">
             <ul className="flex gap-4">
-              {/* TODO: build /privacy and /terms — CLAUDE.md §9 credibility/
-                  polish slices. These routes 404 until then. */}
               <li>
                 <Link href="/privacy" className="flex min-h-11 items-center px-1.5">
                   Privacy Policy
