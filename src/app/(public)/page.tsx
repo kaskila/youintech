@@ -32,7 +32,7 @@ export default async function HomePage() {
     <>
       <section className="overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="flex flex-col justify-center px-4 py-12 sm:py-16 md:py-20 md:pl-12 md:pr-8 lg:pl-20 lg:pr-12 xl:pl-24">
+          <div className="flex flex-col justify-center px-4 pt-12 pb-6 sm:py-16 md:py-20 md:pl-12 md:pr-8 lg:pl-20 lg:pr-12 xl:pl-24">
             <p className="text-eyebrow uppercase text-accent-600">
               Zambia Youth in Technology Network
             </p>
@@ -70,8 +70,13 @@ export default async function HomePage() {
                 CLAUDE.md §2 — don't ship a claim with no data behind it. */}
 
             {/* Image beneath the CTAs on small screens — the split layout
-                only works once there's room for two columns. */}
-            <div className="relative mt-10 h-64 overflow-hidden rounded-card sm:h-80 md:hidden">
+                only works once there's room for two columns.
+                hero_2.png is a 1536x1024 (3:2) transparent cut-out, not a
+                photograph: object-contain so the headset and the top of the
+                head aren't clipped, and the box carries the source's own 3:2
+                ratio rather than a fixed height. Full column width, tight to
+                the CTAs so it reads as part of the hero. */}
+            <div className="relative mt-6 aspect-[3/2] w-full overflow-hidden rounded-card md:hidden">
               <Image
                 src={heroImage}
                 alt=""
@@ -79,7 +84,7 @@ export default async function HomePage() {
                 priority
                 placeholder="blur"
                 sizes="100vw"
-                className="object-cover object-bottom"
+                className="object-contain"
               />
             </div>
           </div>
