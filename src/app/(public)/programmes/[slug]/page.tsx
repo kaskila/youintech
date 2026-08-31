@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { DynamicIcon } from "@/components/public/dynamic-icon";
 import { ProgrammeStatusBadge } from "@/components/public/programme-status-badge";
 import { formatDate } from "@/lib/format-date";
+import { Markdown } from "@/components/public/markdown";
 
 // See (public)/programmes/page.tsx — same rationale for the revalidate window.
 export const revalidate = 3600;
@@ -101,7 +102,7 @@ export default async function ProgrammeDetailPage({
       <p className="mt-4 text-lead text-ink-600">{programme.summary}</p>
 
       {programme.description ? (
-        <p className="mt-6 whitespace-pre-line text-ink-700">{programme.description}</p>
+        <Markdown className="mt-6">{programme.description}</Markdown>
       ) : (
         <p className="mt-6 text-ink-600">Full details for this programme are coming soon.</p>
       )}

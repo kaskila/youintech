@@ -52,9 +52,10 @@ These are product decisions, already made. Do not relitigate them in code.
 | Database | PostgreSQL | Local dev uses a native local Postgres 17 instance — no Docker. Production uses Neon. Neon is never used for local development (this has been tried; a corporate DNS suffix plus a dead IPv6 route make Neon unreachable from at least one contributor's machine). See `README.md` "Local setup" |
 | ORM | Prisma (v7) | Migrations committed. Never `db push` against production. Connection strings live in `prisma.config.ts` / `src/lib/db.ts`, never in `schema.prisma`'s `datasource` block — v7 deprecated `url`/`directUrl` there. CLI (migrations) uses `DIRECT_URL`; runtime client uses `DATABASE_URL` via `@prisma/adapter-pg`. In production these are the unpooled/pooled Neon hosts respectively; locally, with no pooler, both point at the same local database |
 | Auth | Better Auth | Admin/editor only. Public pages are unauthenticated |
-| Media | Cloudinary | Signed uploads from the admin UI. Never expose the API secret client-side. Installed (`src/lib/cloudinary.ts`, signing route at `src/app/api/cloudinary/sign`, `CloudinaryImageUpload` component) and proven against `Programme.coverImage`/`coverAlt`. `Post`, `Event`, and `Partner` still take plain paths until their own admin CRUD slices land — see §9 |
+| Media | Cloudinary | Signed uploads from the admin UI. Never expose the API secret client-side. Installed (`src/lib/cloudinary.ts`, signing route at `src/app/api/cloudinary/sign`, `CloudinaryImageUpload` component) and proven against `Programme.coverImage`/`coverAlt` and used by `Post.coverImage` (Stories slice). `Event` and `Partner` still take plain paths until their own admin CRUD slices land — see §9 |
 | Email | Resend | Transactional only — application confirmations, admin notifications |
 | Validation | Zod | One schema per form, shared between client and server action |
+| Markdown | react-markdown (+ remark-breaks) | Server-rendered only — adds nothing to the client bundle. Raw HTML is disabled (`rehype-raw` deliberately not wired in; `skipHtml` on). Styled directly in `components/public/markdown.tsx`, no typography plugin. Renders `Post.body` and `Programme.description` |
 | Hosting | Vercel | |
 
 **The Vercel build command is `prisma migrate deploy && next build`** (see
@@ -117,7 +118,9 @@ app/
     opportunities/       # List only, no [slug] — cards link out to
                           # applyUrl. Auto-expiring, see §5.
     events/              # List + [slug] detail
-    news/                # List + [slug] detail
+    stories/             # People-focused pieces about young Zambians using
+                          # technology — NOT organisational announcements.
+                          # Post model. List + [slug] detail.
     partners/            # Logos, partnership case, contact CTA
     join/                # Frontliner application form
     contact/
@@ -130,7 +133,7 @@ app/
       sectors/
       programmes/        # Create/edit open to EDITOR; archive is ADMIN-only.
       opportunities/     # Same EDITOR/ADMIN split as programmes.
-      posts/
+      stories/           # Post CRUD. EDITOR creates/edits; ADMIN archives.
       events/
       applications/      # Review queue for Frontliner applications
       partners/
@@ -182,8 +185,15 @@ prisma/
 Keep it this small. Adding a model requires justification.
 
 - **User** — admin/editor accounts only. `role: ADMIN | EDITOR`.
-- **Post** — news and articles. `slug`, `title`, `excerpt`, `body`, `coverImage`,
-  `status: DRAFT | PUBLISHED`, `publishedAt`, `authorId`.
+- **Post** — "Stories": people-focused pieces about young Zambians using technology,
+  not organisational announcements. `slug`, `title`, `excerpt` (required, ≤200 chars —
+  cards/SEO/OG), `body` (markdown, rendered via react-markdown — see §3), `coverImage`
+  (Cloudinary, `stories` folder), `coverAlt`, `sectorId` (nullable), `status: DRAFT |
+  PUBLISHED | ARCHIVED`, `publishedAt`, `authorId` (set to the creating user, never
+  reassigned). Public route: `/stories`. `EDITOR` creates/edits; archiving is
+  `ADMIN`-only, same rule as everything else here. `publishedAt` is stamped once, on the
+  first DRAFT→PUBLISHED transition, and never rewritten — unpublishing does **not**
+  clear it (see `stories/actions.ts`).
 - **Event** — `slug`, `title`, `description`, `startsAt`, `endsAt`, `venue`, `isOnline`,
   `registrationUrl`, `coverImage`, `status`. Past events are **not** deleted — they are
   the credibility evidence.
@@ -191,7 +201,7 @@ Keep it this small. Adding a model requires justification.
   `name`, `tagline`, `description`, `icon`, `displayOrder`, `isActive`. Mostly static,
   but editable. Public route: `/our-sectors`.
 - **Programme** — flagship, cross-sector initiatives. `slug`, `title`, `summary`,
-  `description` (markdown, rendered as plain text until a renderer is added), `icon`,
+  `description` (markdown, rendered via react-markdown — see §3), `icon`,
   `status: PLANNED | UPCOMING | RUNNING | COMPLETED`, `isFlagship`, `applicationsOpen`,
   `applicationUrl` (external — no in-house application flow), `targetDate` (nullable —
   NULL means nothing is scheduled), `displayOrder`, `contentStatus`. Public route:
@@ -204,7 +214,8 @@ Keep it this small. Adding a model requires justification.
   and can be applied to. Don't conflate the two models or their routes.
 - **Opportunity** — scholarships, fellowships, internships, jobs, grants, training, and
   competitions posted on behalf of external organisations. `slug`, `title`, `summary`,
-  `description` (markdown, plain text for now — same as `Programme.description`),
+  `description` (markdown source; not rendered anywhere yet — `/opportunities` has no
+  `[slug]` detail page, cards link straight out to `applyUrl`),
   `organisation` (who's actually offering it), `type: SCHOLARSHIP | FELLOWSHIP |
   INTERNSHIP | JOB | GRANT | TRAINING | COMPETITION | OTHER`, `location` (nullable),
   `isRemote`, `deadline` (**required** — see below), `applyUrl` (external, no in-house
@@ -304,8 +315,10 @@ applies) plus the public page that reads it, shipped together.
    other content type (see git history); moved here because §2's "non-technical people
    must be able to publish" is a higher-priority constraint than sequential build
    order, and a paste-a-URL field for a cover image fails that constraint outright.
-5. **Stories** — `Post` admin CRUD + public `/news` list and `[slug]` detail. Cover
-   image uses the upload widget from (4), not a paste-a-URL field.
+5. **Stories** — `Post` admin CRUD + public `/stories` list and `[slug]` detail.
+   People-focused pieces about young Zambians using technology, not organisational
+   announcements. Markdown body (react-markdown, §3). Cover image uses the upload
+   widget from (4), not a paste-a-URL field.
 6. **Events** — `Event` admin CRUD + public `/events` list and `[slug]` detail. Same
    upload widget as Stories.
 7. **Inquiries** — public `/contact` form + Resend notification.

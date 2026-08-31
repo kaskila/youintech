@@ -12,7 +12,7 @@ import { cloudinary } from "@/lib/cloudinary";
 // arbitrary folder string — this keeps a compromised admin session (or a
 // crafted request) from writing outside the paths this endpoint is meant
 // for. Extend this list as more models adopt uploads (CLAUDE.md §9).
-const ALLOWED_FOLDERS = ["programmes", "opportunities", "events"] as const;
+const ALLOWED_FOLDERS = ["programmes", "opportunities", "events", "stories"] as const;
 
 const signRequestSchema = z.object({
   folder: z.enum(ALLOWED_FOLDERS),

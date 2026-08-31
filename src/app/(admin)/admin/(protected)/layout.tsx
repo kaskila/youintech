@@ -26,6 +26,7 @@ export default async function ProtectedAdminLayout({
           <Link href="/admin/programmes">Programmes</Link>
           <Link href="/admin/opportunities">Opportunities</Link>
           <Link href="/admin/events">Events</Link>
+          <Link href="/admin/stories">Stories</Link>
           {/* Inquiries hold personal data — EDITOR can't see them (same rule
               as Application, CLAUDE.md §5), so don't even link there. */}
           {user.role === Role.ADMIN ? (
