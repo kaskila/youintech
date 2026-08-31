@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-2 rounded-pill bg-brand-600 px-4 py-2 font-medium text-white disabled:opacity-60"
+            className="mt-2 rounded-card bg-brand-600 px-4 py-2 font-medium text-white disabled:opacity-60"
           >
             {isSubmitting ? "Signing in…" : "Sign in"}
           </button>

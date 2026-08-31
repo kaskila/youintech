@@ -50,7 +50,7 @@ export default async function EventsAdminPage({
         <h1 className="text-display-sm">Events</h1>
         <Link
           href="/admin/events/new"
-          className="rounded-pill bg-brand-600 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-card bg-brand-600 px-4 py-2 text-sm font-medium text-white"
         >
           New event
         </Link>
@@ -103,7 +103,7 @@ export default async function EventsAdminPage({
                 <div className="flex items-center gap-3">
                   <Link
                     href={`/admin/events/${event.id}`}
-                    className="rounded-pill border border-border-strong px-3 py-1 text-sm text-brand-700"
+                    className="rounded-card border border-border-strong px-3 py-1 text-sm text-brand-700"
                   >
                     Edit
                   </Link>

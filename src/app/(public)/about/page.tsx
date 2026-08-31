@@ -116,7 +116,7 @@ export default function AboutPage() {
             <div className="mt-8">
               <Link
                 href="/our-sectors"
-                className="inline-block rounded-pill bg-brand-600 px-5 py-3 text-center font-medium text-white"
+                className="inline-block rounded-card bg-brand-600 px-5 py-3 text-center font-medium text-white"
               >
                 Explore our sectors
               </Link>
@@ -307,7 +307,7 @@ export default function AboutPage() {
           </p>
           <Link
             href="/contact"
-            className="mt-6 inline-block rounded-pill bg-white px-5 py-3 text-center font-medium text-brand-900"
+            className="mt-6 inline-block rounded-card bg-white px-5 py-3 text-center font-medium text-brand-900"
           >
             Contact us
           </Link>

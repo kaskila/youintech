@@ -73,7 +73,7 @@ export default async function InquiriesPage({
 
         <button
           type="submit"
-          className="rounded-pill border border-border-strong px-4 py-2 text-sm text-brand-700"
+          className="rounded-card border border-border-strong px-4 py-2 text-sm text-brand-700"
         >
           Filter
         </button>

@@ -34,7 +34,7 @@ export default async function OpportunitiesAdminPage({
         <h1 className="text-display-sm">Opportunities</h1>
         <Link
           href="/admin/opportunities/new"
-          className="rounded-pill bg-brand-600 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-card bg-brand-600 px-4 py-2 text-sm font-medium text-white"
         >
           New opportunity
         </Link>
@@ -90,7 +90,7 @@ export default async function OpportunitiesAdminPage({
                 <div className="flex items-center gap-3">
                   <Link
                     href={`/admin/opportunities/${opportunity.id}`}
-                    className="rounded-pill border border-border-strong px-3 py-1 text-sm text-brand-700"
+                    className="rounded-card border border-border-strong px-3 py-1 text-sm text-brand-700"
                   >
                     Edit
                   </Link>

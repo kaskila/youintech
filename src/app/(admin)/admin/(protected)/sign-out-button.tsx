@@ -20,7 +20,7 @@ export function SignOutButton() {
       type="button"
       onClick={handleSignOut}
       disabled={isSigningOut}
-      className="rounded-pill border border-brand-100/40 px-3 py-1 text-sm text-brand-100 disabled:opacity-60"
+      className="rounded-card border border-brand-100/40 px-3 py-1 text-sm text-brand-100 disabled:opacity-60"
     >
       {isSigningOut ? "Signing out…" : "Sign out"}
     </button>

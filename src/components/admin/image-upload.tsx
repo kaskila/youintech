@@ -181,7 +181,7 @@ export function CloudinaryImageUpload({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={status === "uploading"}
-          className="rounded-pill border border-brand-900 px-4 py-2 text-sm font-medium text-brand-900 disabled:opacity-60"
+          className="rounded-card border border-brand-900 px-4 py-2 text-sm font-medium text-brand-900 disabled:opacity-60"
         >
           {status === "uploading" ? "Uploading…" : imageUrl ? "Replace image" : "Choose image"}
         </button>

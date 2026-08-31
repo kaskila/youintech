@@ -14,7 +14,7 @@ export function JoinMovementLink({
     <Link
       href="/contact?category=volunteer"
       onClick={onNavigate}
-      className={`inline-flex items-center justify-center gap-2 rounded-pill bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 ${className ?? ""}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-card bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 ${className ?? ""}`}
     >
       Join the Movement
       <span aria-hidden="true">→</span>

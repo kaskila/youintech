@@ -25,7 +25,7 @@ export function EventArchiveButton({ id, title }: { id: string; title: string })
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-pill border border-danger px-3 py-1 text-sm text-danger disabled:opacity-40"
+        className="rounded-card border border-danger px-3 py-1 text-sm text-danger disabled:opacity-40"
       >
         {isPending ? "Archiving…" : "Archive"}
       </button>

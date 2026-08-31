@@ -111,7 +111,7 @@ export default async function ProgrammeDetailPage({
           href={programme.applicationUrl ?? undefined}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-8 inline-block rounded-pill bg-brand-600 px-5 py-3 font-medium text-white"
+          className="mt-8 inline-block rounded-card bg-brand-600 px-5 py-3 font-medium text-white"
         >
           Apply
         </a>

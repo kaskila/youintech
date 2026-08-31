@@ -51,7 +51,7 @@ export default async function SectorsPage() {
                   />
                   <Link
                     href={`/admin/sectors/${sector.id}`}
-                    className="rounded-pill border border-border-strong px-3 py-1 text-sm text-brand-700"
+                    className="rounded-card border border-border-strong px-3 py-1 text-sm text-brand-700"
                   >
                     Edit
                   </Link>

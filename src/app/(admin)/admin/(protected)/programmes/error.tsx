@@ -15,7 +15,7 @@ export default function ProgrammesError({
         <button
           type="button"
           onClick={reset}
-          className="rounded-pill border border-border-strong px-3 py-1 text-sm text-brand-700"
+          className="rounded-card border border-border-strong px-3 py-1 text-sm text-brand-700"
         >
           Retry
         </button>

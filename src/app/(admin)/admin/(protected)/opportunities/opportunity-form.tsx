@@ -296,7 +296,7 @@ export function OpportunityForm({
       <button
         type="submit"
         disabled={isPending}
-        className="self-start rounded-pill bg-brand-600 px-4 py-2 font-medium text-white disabled:opacity-60"
+        className="self-start rounded-card bg-brand-600 px-4 py-2 font-medium text-white disabled:opacity-60"
       >
         {isPending ? "Saving…" : isEditing ? "Save" : "Create opportunity"}
       </button>

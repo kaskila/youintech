@@ -94,7 +94,7 @@ export function OpportunityCard({
           href={applyUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-auto inline-block rounded-pill bg-brand-600 px-4 py-2 text-center text-sm font-medium text-white"
+          className="mt-auto inline-block rounded-card bg-brand-600 px-4 py-2 text-center text-sm font-medium text-white"
         >
           View opportunity
         </a>
