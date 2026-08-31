@@ -39,6 +39,14 @@ model User {
   image         String?
   role          Role     @default(EDITOR)
   isActive      Boolean  @default(true)
+  // Set true when an ADMIN creates the account or resets its password: the
+  // password in play is a system-generated temporary one. While true, every
+  // /admin route redirects to /admin/change-password (enforced in the
+  // (protected) layout AND re-checked in changeOwnPassword). Cleared when the
+  // user sets their own password. Not a Better Auth field — read it from the
+  // DB, it is never in the session cookie. Default false so every existing
+  // row (and any account seeded straight through prisma/seed.ts) is unaffected.
+  mustChangePassword Boolean @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

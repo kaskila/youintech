@@ -22,10 +22,10 @@ export default async function OurSectorsPage() {
   return (
     <div className="mx-auto max-w-page px-4 py-12 sm:py-16">
       <p className="text-eyebrow uppercase text-accent-600">Sectors</p>
-      <h1 className="mt-2 text-display-md">Where Frontliners build skills</h1>
+      <h1 className="mt-2 text-display-md">Eight sectors, one idea</h1>
       <p className="mt-4 max-w-content text-lead text-ink-600">
-        Eight sectors, one mission: real, practical technology skills for
-        young Zambians.
+        Young Zambians are already using technology to solve problems in their own fields. 
+        We work across all eight, because the best innovators are the people who face the actual problem.
       </p>
 
       {sectors.length === 0 ? (

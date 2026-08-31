@@ -48,7 +48,7 @@ export default async function EventsPage() {
       <p className="text-eyebrow uppercase text-accent-600">Events</p>
       <h1 className="mt-2 text-display-md">Events</h1>
       <p className="mt-4 max-w-content text-lead text-ink-600">
-        Workshops, meetups, and conferences we run or co-host — and a growing record of
+        Workshops, meetups, and conferences we run or co-host and a growing record of
         everything we already have.
       </p>
 
@@ -56,7 +56,7 @@ export default async function EventsPage() {
         <h2 className="text-display-sm">Upcoming</h2>
         {upcoming.length === 0 ? (
           <p className="mt-4 rounded-card border border-border bg-surface-subtle p-6 text-ink-600">
-            Nothing scheduled right now — check back soon, or see what we&apos;ve already run
+            Nothing scheduled right now, check back soon, or see what we&apos;ve already run
             below.
           </p>
         ) : (
@@ -86,7 +86,7 @@ export default async function EventsPage() {
         <h2 className="text-display-sm">Past</h2>
         {past.length === 0 ? (
           <p className="mt-4 rounded-card border border-border bg-surface-subtle p-6 text-ink-600">
-            We haven&apos;t run an event yet — check back after the first one.
+            We haven&apos;t run an event yet, check back after the first one.
           </p>
         ) : (
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

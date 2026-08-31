@@ -51,6 +51,28 @@ export const auth = betterAuth({
       maxAge: 60,
     },
   },
+  databaseHooks: {
+    session: {
+      create: {
+        // Deactivated users must not be able to sign in. The email/password
+        // sign-in route does NOT run user.validateUserInfo (verified against
+        // node_modules/better-auth/dist/api/routes/sign-in.mjs — it's only
+        // wired into the OAuth callback), so the check goes here: every
+        // sign-in creates a session, and returning false makes createSession
+        // return null, which the route surfaces as FAILED_TO_CREATE_SESSION.
+        // This is a fresh DB read, not the cached cookie — see
+        // require-staff.ts for the same freshness reasoning. Existing
+        // sessions are additionally killed outright by deactivateUser.
+        before: async (session) => {
+          const user = await db.user.findUnique({
+            where: { id: session.userId },
+            select: { isActive: true },
+          });
+          if (!user || !user.isActive) return false;
+        },
+      },
+    },
+  },
 });
 
 export type Session = typeof auth.$Infer.Session;

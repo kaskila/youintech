@@ -49,10 +49,10 @@ export default async function OpportunitiesPage({
   return (
     <div className="mx-auto max-w-page px-4 py-12 sm:py-16">
       <p className="text-eyebrow uppercase text-accent-600">Opportunities</p>
-      <h1 className="mt-2 text-display-md">Open right now</h1>
+      <h1 className="mt-2 text-display-md">Opportunities for young Zambians</h1>
       <p className="mt-4 max-w-content text-lead text-ink-600">
-        Scholarships, fellowships, internships, jobs, grants, training, and competitions —
-        posted as they come in. Listings come down automatically once their deadline passes.
+        Scholarships, fellowships, internships, jobs, grants, training and competitions. 
+        Everything listed here is still open, closed opportunities are removed, so nothing on this page has expired.
       </p>
 
       {/* Filter by type via the URL, not client state — a plain link per
