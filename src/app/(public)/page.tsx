@@ -43,16 +43,22 @@ export default async function HomePage() {
             <p className="mt-6 max-w-content text-lead text-ink-600">
               Building the skills, community and opportunities for every young person to innovate, solve real problems and shape Zambia’s future.
             </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+            {/* Below sm the buttons sit their own width, left-aligned — full-bleed
+                stacked buttons read as form submits and eat the fold. They go
+                edge-to-edge in a row again at sm (items-stretch keeps the pair
+                equal height there). py-2 here vs py-3 from sm up; min-h-[2.875rem]
+                (46px) is the tap-target floor on the primary CTA of the site,
+                with margin over 44px for sub-pixel rounding. */}
+            <div className="mt-8 flex flex-row items-start gap-4 sm:flex-row sm:items-stretch">
               <Link
                 href="/programmes"
-                className="rounded-pill bg-brand-600 px-5 py-3 text-center font-medium text-white"
+                className="inline-flex min-h-[2.875rem] items-center justify-center rounded-pill bg-brand-600 px-5 py-2 font-medium text-white sm:py-3"
               >
                 Explore our programmes
               </Link>
               <Link
                 href="/about"
-                className="rounded-pill border border-brand-900 px-5 py-3 text-center font-medium text-brand-900"
+                className="inline-flex min-h-[2.875rem] items-center justify-center rounded-pill border border-brand-600 px-5 py-2 font-medium text-brand-900 sm:py-3"
               >
                 About YouthInTech
               </Link>
