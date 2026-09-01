@@ -24,7 +24,7 @@ export default async function ProgrammesPage() {
       <p className="text-eyebrow uppercase text-accent-600">Programmes</p>
       <h1 className="mt-2 text-display-md">Flagship programmes</h1>
       <p className="mt-4 max-w-content text-lead text-ink-600">
-        Five national initiatives, designed to run across all sectors of the economy. 
+        National initiatives, designed to run across all sectors of the economy. 
         Each is planned and not yet launched, we&apos;ll open applications here when they are.
       </p>
 

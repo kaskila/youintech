@@ -184,9 +184,7 @@ export default async function HomePage() {
           <p className="text-eyebrow uppercase text-accent-600">Programmes</p>
           <h2 className="mt-2 text-display-sm">Flagship programmes</h2>
           <p className="mt-4 max-w-content text-ink-700">
-            Cross-sector initiatives YouthInTech is building — for
-            Frontliners across every sector, not just one. Here&apos;s where
-            each one currently stands.
+            National initiatives, designed to run across all sectors of the economy
           </p>
 
           {programmes.length === 0 ? (
