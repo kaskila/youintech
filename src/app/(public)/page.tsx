@@ -54,13 +54,13 @@ export default async function HomePage() {
                 href="/programmes"
                 className="inline-flex min-h-[2.875rem] items-center justify-center rounded-card bg-brand-600 px-5 py-2 font-medium text-white sm:py-3"
               >
-                Explore our programmes
+                Our programmes
               </Link>
               <Link
                 href="/about"
                 className="inline-flex min-h-[2.875rem] items-center justify-center rounded-card border border-brand-600 px-5 py-2 font-medium text-brand-900 sm:py-3"
               >
-                About YouthInTech
+                About Us
               </Link>
             </div>
 
